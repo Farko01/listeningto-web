@@ -7,7 +7,7 @@ WORKDIR /listeningto-web
 COPY package*.json ./
 COPY . ./
 
-RUN yarn
+RUN yarn install --ignore-engines
 
 EXPOSE 3000
 
