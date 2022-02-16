@@ -1,14 +1,14 @@
 FROM ubuntu:20.04
-FROM node:16.14.0-buster
-FROM yarnpkg/dev
+FROM node:16.14
 
-WORKDIR /listeningto-web
+WORKDIR /app
 
 COPY package*.json ./
-COPY . ./
 
-RUN yarn install --ignore-engines
+RUN npm install -ignore-engines
+
+COPY . .
 
 EXPOSE 3000
 
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]
