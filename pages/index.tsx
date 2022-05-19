@@ -1,13 +1,15 @@
 import type { NextPage } from "next";
-
-import Navbar from '../components/Navbar';
+import Head from "next/head";
 
 const Home: NextPage = () => {
   return (
     <>
-      <Navbar />
+      <Head>
+        <title>Listeningto</title>
+        <meta property="og:title" content="Listeningto" key="title" />
+      </Head>
     </>
   )
 }
 
-export default Home
+export default Home;

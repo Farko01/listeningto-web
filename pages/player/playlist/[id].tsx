@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 
-const Player: NextPage = () => {
+const PlaylistPage: NextPage = () => {
   return (
     <>
-
+    
     </>
   )
 }
 
-export default Player
+export default PlaylistPage;
