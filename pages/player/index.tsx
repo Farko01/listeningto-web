@@ -6,7 +6,6 @@ const Player: NextPage = () => {
     <>
       <Head>
         <title>Web Player - Listeningto</title>
-        <meta property="og:title" content="Web Player - Listeningto" key="title" />
       </Head>
     </>
   )

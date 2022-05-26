@@ -3,4 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-module.exports = nextConfig
+require("dotenv").config();
+
+module.exports = { 
+  images: {
+    domains: [process.env.domain]
+  },
+  nextConfig 
+}
