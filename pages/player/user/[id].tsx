@@ -1,12 +1,11 @@
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import type { GetServerSideProps } from 'next'
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const user = await axios.get(`http://localhost:8080/user/${params!.id}`);
+  const user = await axios.get(`${process.env.api_url}/user/${params!.id}`);
   const data = user.data;
   const status = user.status;
 
@@ -18,7 +17,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 }
 
-const UserPage: NextPage = (props) => {
+interface IAppProps {
+  data: {
+    username: string,
+    email: string,
+    profilePic: string,
+  },
+  status: number
+}
+
+const UserPage: NextPage<IAppProps> = (props) => {
   return (
     <>
       <Head>

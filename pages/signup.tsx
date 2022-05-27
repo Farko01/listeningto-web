@@ -1,14 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
-const Home: NextPage = () => {
+const SignupPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Listeningto</title>
+        <title>Sign up - Listeningto</title>
       </Head>
+
+      
     </>
   )
 }
 
-export default Home;
+export default SignupPage;
