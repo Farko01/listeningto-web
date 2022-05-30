@@ -8,7 +8,7 @@ const Player: NextPage = () => {
         <title>Web Player - Listeningto</title>
       </Head>
     </>
-  )
-}
+  );
+};
 
 export default Player;

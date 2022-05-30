@@ -7,11 +7,11 @@ require("dotenv").config();
 
 module.exports = { 
   env: {
-    domain: process.env.domain,
-    api_url: process.env.api_url
+    DOMAIN: process.env.DOMAIN,
+    API_URL: process.env.API_URL
   },
   images: {
-    domains: [process.env.domain]
+    domains: [process.env.DOMAIN]
   },
   nextConfig 
 }

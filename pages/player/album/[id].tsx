@@ -1,11 +1,7 @@
 import type { NextPage } from "next";
 
 const AlbumPage: NextPage = () => {
-  return (
-    <>
-    
-    </>
-  )
-}
+  return <></>;
+};
 
 export default AlbumPage;

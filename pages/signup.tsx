@@ -7,10 +7,8 @@ const SignupPage: NextPage = () => {
       <Head>
         <title>Sign up - Listeningto</title>
       </Head>
-
-      
     </>
-  )
-}
+  );
+};
 
 export default SignupPage;

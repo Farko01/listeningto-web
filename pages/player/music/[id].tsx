@@ -1,11 +1,7 @@
 import type { NextPage } from "next";
 
 const MusicPage: NextPage = () => {
-  return (
-    <>
-    
-    </>
-  )
-}
+  return <></>;
+};
 
 export default MusicPage;

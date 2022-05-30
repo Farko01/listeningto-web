@@ -8,7 +8,7 @@ const Home: NextPage = () => {
         <title>Listeningto</title>
       </Head>
     </>
-  )
-}
+  );
+};
 
 export default Home;
