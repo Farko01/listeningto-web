@@ -1,8 +1,17 @@
-import type { NextPage } from "next";
-import { FormEvent, useState } from "react";
+import { NextPage } from "next";
+import { FormEvent, useState, useEffect } from "react";
 import Head from "next/head";
+import Router from "next/router";
+import Cookies from "universal-cookie";
 
 const LoginPage: NextPage = () => {
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    const auth = cookies.get("auth");
+    if (auth) Router.push("player");
+  });
+
   const [email_or_username, setEOU] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,7 +24,10 @@ const LoginPage: NextPage = () => {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        cookies.set("auth", data.auth);
+        Router.push(`player/user/${data.user.id}`)
+      });
   };
 
   return (
@@ -35,7 +47,7 @@ const LoginPage: NextPage = () => {
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <input type="submit" value={"Login"} />
+        <input type="submit" value="Login" />
       </form>
       <></>
     </div>

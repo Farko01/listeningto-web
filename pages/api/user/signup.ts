@@ -2,14 +2,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const url = `${process.env.API_URL}/user/login`;
+  const url = `${process.env.API_URL}/user`;
 
   const data = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
-  const { email_or_username, password } = data;
+  const { email, username, password } = data;
 
   try {
     const ares = await axios.post(url, {
-      email_or_username,
+      email,
+      username,
       password,
     });
     
