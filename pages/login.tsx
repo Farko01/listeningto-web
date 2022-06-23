@@ -15,6 +15,8 @@ const LoginPage: NextPage = () => {
   const [email_or_username, setEOU] = useState("");
   const [password, setPassword] = useState("");
 
+  const [alert, setAlert] = useState("");
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -25,8 +27,10 @@ const LoginPage: NextPage = () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        if (data.message) return setAlert(data.message);
+
         cookies.set("auth", data.auth);
-        Router.push(`player/user/${data.user.id}`)
+        Router.push(`player/user/${data.user._id}`)
       });
   };
 
@@ -49,7 +53,7 @@ const LoginPage: NextPage = () => {
         />
         <input type="submit" value="Login" />
       </form>
-      <></>
+      <h2 id="alert" className="text-red-800">{alert}</h2>
     </div>
   );
 };
