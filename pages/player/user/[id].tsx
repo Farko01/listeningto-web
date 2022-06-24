@@ -48,6 +48,19 @@ interface IAppProps {
 }
 
 const UserPage: NextPage<IAppProps> = (props) => {
+  const UpdateInfo = () => {
+    if (props.authorized) {
+      return (
+        <div>
+          <h2>Atualize suas informações aqui</h2>
+          <form>
+            <input type="file" name="file" />
+          </form>
+        </div>
+      )
+    } else return <></>
+  }
+
   return (
     <>
       <Head>
@@ -62,6 +75,8 @@ const UserPage: NextPage<IAppProps> = (props) => {
       />
       <h2>Nome: {props.data.username}</h2>
       <h2>{props.authorized ? "O usuário logado é o mesmo que o dessa página" : "O usuário logado não é o mesmo que o dessa página" }</h2>
+
+      <UpdateInfo />
     </>
   );
 };
