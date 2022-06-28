@@ -1,20 +1,28 @@
-import type { NextPage } from "next";
-import type { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import type { NextPage, GetServerSideProps } from "next";
 import { verify } from "jsonwebtoken";
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import cookie from "cookie";
+import Link from 'next/link';
 
 interface IAuthToken {
   id: string;
 }
 
+interface IAppProps {
+  data: {
+    _id: string;
+    username: string;
+    profilePic: string;
+  };
+  status: number;
+  authorized: boolean;
+}
+
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   const url = `${process.env.API_URL}/user/${params!.id}`;
   const res = await axios.get(url);
-  delete res.data.email;
 
   // Este valor determina se o usuário acessando a página é aquele a quem a página se refere, dando permissão para
   // atualizar informações a partir dela
@@ -38,27 +46,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
   };
 };
 
-interface IAppProps {
-  data: {
-    username: string;
-    profilePic: string;
-  };
-  status: number;
-  authorized: boolean;
-}
-
 const UserPage: NextPage<IAppProps> = (props) => {
   const UpdateInfo = () => {
     if (props.authorized) {
       return (
-        <div>
-          <h2>Atualize suas informações aqui</h2>
-          <form>
-            <input type="file" name="file" />
-          </form>
-        </div>
+        <Link href={`${props.data._id}/edit`}>
+          Edit Profile
+        </Link>
       )
-    } else return <></>
+    } else return null
   }
 
   return (
