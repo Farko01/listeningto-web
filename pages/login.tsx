@@ -45,13 +45,13 @@ const LoginPage: NextPage = () => {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen bg-gray-800">
       <Head>
         <title>Login - Listeningto</title>
       </Head>
 
       <div className="container m-auto h-screen flex flex-col items-center">
-        <div className="border-2 rounded p-8 m-auto">
+        <div className="border-2 border-blue-900 rounded p-8 m-auto">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">
@@ -63,7 +63,7 @@ const LoginPage: NextPage = () => {
                   type="text"
                   placeholder="Username or email address"
                   onChange={(e) => setEOU(e.target.value)}
-                  className="bg-white border-none appearance-none"
+                  className="bg-white border-none appearance-none focus:ring-0"
                   name="email_or_username"
                 />
               </div>
@@ -79,7 +79,7 @@ const LoginPage: NextPage = () => {
                   type="password"
                   placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white border-none appearance-none"
+                  className="bg-white border-none appearance-none focus:ring-0"
                   name="password"
                 />
               </div>
@@ -91,7 +91,7 @@ const LoginPage: NextPage = () => {
                 checked={rememberMe}
                 onChange={() => { setRememberMe(!rememberMe) }}
                 name="rememberMe"
-                className="appearance-none"
+                className="appearance-none rounded accent-blue-900"
               />
               <label className="text-white ml-2" htmlFor="rememberMe">Remember me</label>
             </div>
