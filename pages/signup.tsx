@@ -9,7 +9,7 @@ const SignupPage: NextPage = () => {
 
   useEffect(() => {
     const auth = cookies.get("auth");
-    if (auth) Router.push("player");
+    if (auth) Router.push("/");
   });
 
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ const SignupPage: NextPage = () => {
       if (data.message) return setAlert(data.message);
 
       cookies.set("auth", data.auth);
-      Router.push(`player/user/${data.user._id}`);
+      Router.push(`user/${data.user._id}`);
     });
   };
 

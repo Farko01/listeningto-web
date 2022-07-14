@@ -9,13 +9,10 @@ import { UserCircleIcon, LockClosedIcon } from "@heroicons/react/outline"
 const LoginPage: NextPage = () => {
   const cookies = new Cookies();
 
-  // Alterando o background color
-  // useEffect(() => { document.querySelector('body')!.classList.add('bg-neutral-800') })
-
   // Redirecionamento caso o usuário já esteja logado
   useEffect(() => {
     const auth = cookies.get("auth");
-    if (auth) Router.push("player");
+    if (auth) Router.push("/");
   });
 
   // States pro form
@@ -40,18 +37,18 @@ const LoginPage: NextPage = () => {
         if (data.message) return setAlert(data.message);
 
         cookies.set("auth", data.auth, { expires: rememberMe ? new Date(Date.now() + 315360000000) : undefined });
-        Router.push(`player/user/${data.user._id}`)
+        Router.push(`user/${data.user._id}`)
       });
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-800">
+    <div className="h-screen w-screen bg-dark-gray-900">
       <Head>
         <title>Login - Listeningto</title>
       </Head>
 
       <div className="container m-auto h-screen flex flex-col items-center">
-        <div className="border-2 border-blue-900 rounded p-8 m-auto">
+        <div className="border-2 border-dark-gray-800 rounded p-8 m-auto">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">

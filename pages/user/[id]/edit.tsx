@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
     }
   }
 
-  const url = `${process.env.API_URL}/user/${params!.id}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${params!.id}`;
   const res = await axios.get(url, authorized ? { headers: { Authorization: `Bearer ${parsedCookies!.auth}` } } : undefined);
 
   return {

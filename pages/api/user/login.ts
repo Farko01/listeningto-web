@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const url = `${process.env.API_URL}/user/login`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/user/login`;
 
   const data = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
   const { email_or_username, password } = data;

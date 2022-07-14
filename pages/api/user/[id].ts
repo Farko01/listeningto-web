@@ -7,7 +7,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "GET": {
-        const url = `${process.env.API_URL}/user/${req.query.id}`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${req.query.id}`;
         const ares = await axios.get(url);
 
         res.status(ares.status).json(ares.data);
