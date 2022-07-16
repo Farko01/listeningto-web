@@ -1,51 +1,149 @@
-import React, { useState } from 'react'
-import ReactAudioPlayer from 'react-audio-player'
-import usePlayer from './usePlayer';
+import React, { useEffect, useState, useRef } from 'react'
+import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs'
+import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
+import { FiVolume1, FiVolume2, FiVolumeX } from 'react-icons/fi'
+import { TbRepeat, TbRepeatOnce } from 'react-icons/tb'
+import { IconContext } from 'react-icons'
 
-import { VolumeUpIcon, VolumeOffIcon } from '@heroicons/react/outline';
+import IMusic from '../interfaces/music.interface';
+import IMusicList from '../interfaces/musicList.interface'
 
 interface IAppProps {
-  name: string;
-  file: string
+  playerRef: React.MutableRefObject<IMusicList | null>
 }
 
-const Player = () => {
-  const [volume, setVolume] = useState(1);
-  const [muted, setMuted] = useState(false);
-  const [src, setSrc] = useState();
-  const { playing, setPlaying } = usePlayer();
-  const [rap, setRap] = useState<ReactAudioPlayer | null>();
-
-  // Tempo
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState("00");
+const Player = (props: IAppProps) => {
+  // References
+  const audioPlayer = useRef() as React.RefObject<HTMLAudioElement>;  // <audio> reference
+  const progressBar = useRef() as React.RefObject<HTMLInputElement>;  // Progress bar reference
+  const animationRef = useRef<number>();  // Animation reference
   
-  // Obter duração
-  const getDuration = () => {
-    const duration = rap?.audioEl.current?.duration;
+  // Changing the music that is being played
+  useEffect(() => {
+    if (!props.playerRef.current) return;
 
-    if (duration) {
-      setMinutes(Math.floor(duration / 60));
+    const currentSrc = props.playerRef.current.musicList[props.playerRef.current.index].file!;
+    audioPlayer.current!.src = `${process.env.NEXT_PUBLIC_API_URL}${currentSrc}`;
+  }, [props.playerRef.current?.musicList, props.playerRef.current?.index]);
 
-      // Formatar segundos com só um dígito
-      const seconds = duration - minutes * 60;
-      setSeconds(seconds < 10 ? "0" + seconds : seconds.toString());
+  // Play and pause
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const togglePlayPause = () => {
+    const prevValue = isPlaying;
+
+    if (!prevValue) {
+      audioPlayer.current?.play();
+      
+      animationRef.current = requestAnimationFrame(updateProgress);
+    } else {
+      audioPlayer.current?.pause();
+      cancelAnimationFrame(animationRef.current!);
     }
+
+    setIsPlaying(!prevValue);
+  }
+
+  // Formating time
+  const formatTime = (seconds: number) => {
+    if (!seconds || seconds == 0) return `00:00`
+
+    const minutes = Math.floor(seconds / 60);
+    const returnedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
+
+    const remainingSeconds = Math.floor(seconds % 60);
+    const returnedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds.toString();
+
+    return `${returnedMinutes}:${returnedSeconds}`;
+  }
+
+  // Duration
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const seconds = Math.floor(audioPlayer.current?.duration!);
+    progressBar.current!.max = seconds.toString();
+
+    setDuration(seconds);
+  }, [audioPlayer?.current?.onloadedmetadata, audioPlayer?.current?.readyState]);
+
+  // Current time
+  const [currentTime, setCurrentTime] = useState(0);
+
+  const changeRange = () => {
+    audioPlayer.current!.currentTime = parseInt(progressBar.current?.value!);
+    // setCurrentTime(parseInt(progressBar.current!.value));
+    changeProgressBarColor();
+  }
+
+  const updateProgress = () => {
+    progressBar.current!.value = audioPlayer.current!.currentTime.toString();
+    // setCurrentTime(parseInt(progressBar.current!.value));
+    changeProgressBarColor();
+
+    animationRef.current = requestAnimationFrame(updateProgress);
+  }
+
+  const changeProgressBarColor = () => {
+    const value = parseInt(progressBar.current!.value);
+    const progressBarHTML = document.getElementById("progress-bar") as HTMLInputElement;
+    progressBarHTML!.style.background = `linear-gradient(to right, green 0%, green ${value / duration * 100}%, #fff ${value / duration * 100}%, white 100%)`
+    setCurrentTime(value);
   }
 
   return (
-    <div id="player" className="w-screen fixed bottom-0 border-t-2 border-blue-900 bg-gradient-to-b from-blue-900/50 to-transparent h-20 pt-7">
-      <ReactAudioPlayer ref={(element) => { setRap(element) }} id="audio" volume={volume} muted={muted} src={src} onLoadedMetadata={() => getDuration() } />
+    <div id="player" className="w-screen fixed bottom-0 border-t-2 border-blue-900 bg-gradient-to-b from-blue-900/50 to-dark-gray-800 h-20 pt-7">
+      <audio ref={audioPlayer} id="audio" autoPlay />
 
-      <div className="inline-block absolute right-4">
-        <div>
+      
+      <div className="flex flex-col items-center">
+        {/* Buttons */}
+        <IconContext.Provider value={{ className: "mx-1", size: '30px' }}>
+          <div className="inline-block absolute top-2">
+            {/* Previous */}
+            <button>
+              <BiSkipPrevious />
+            </button>
 
+            {/* Shuffle */}
+            <button>
+              <BiShuffle />
+            </button>
+
+            {/* Play/Pause */}
+            <button onClick={() => togglePlayPause() }>
+              { isPlaying ? <BsPauseFill /> : <BsFillPlayFill />  }
+            </button>
+
+            {/* Repeat */}
+            <button>
+              <TbRepeat />
+            </button>
+
+            {/* Next */}
+            <button>
+              <BiSkipNext />
+            </button>
+          </div>
+        </IconContext.Provider>
+
+        {/* Current Time / Progress Bar / Duration */}
+        <div className="block ml-5 mt-3">
+          {/* Current Time */}
+          <div className='inline-block mx-2 font-mono text-xs'>
+            {formatTime(currentTime)}
+          </div>
+
+          {/* Progress Bar */}
+          <div className='mx-2 inline-block relative bottom-0.5 w-72'>
+            <input id="progress-bar" type="range" defaultValue="0" onChange={() => { changeRange() }} ref={progressBar} className="appearance-none audio-progress-bar h-1 w-full rounded outline-none" />
+          </div>
+
+          {/* Duration */}
+          <div className='inline-block mx-2 font-mono text-xs'>
+            {formatTime(duration)}
+          </div>
         </div>
-
-        <div onClick={() => setMuted(!muted)} className="h-7 w-7 inline-block mr-2">
-          {muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
-        </div>
-        <input className="inline-block mb-1" type="range" value={muted ? 0 : volume} defaultValue={1} min={0} max={1} step={0.01} onChange={(e) => { setVolume(parseFloat(e.target.value)); } } />
       </div>
     </div>
   )

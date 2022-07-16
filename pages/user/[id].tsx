@@ -5,14 +5,14 @@ import Head from "next/head";
 import Image from "next/image";
 import cookie from "cookie";
 import Link from 'next/link';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import IMusic from "../../interfaces/music.interface";
 import IAlbum from "../../interfaces/album.interface";
 import IPlaylist from "../../interfaces/playlist.interface";
+import IMusicList from "../../interfaces/musicList.interface";
 
 import MusicList from '../../components/MusicList';
-import MusicElement from '../../components/MusicElement'
 import Player from '../../components/Player';
 
 interface IAuthToken {
@@ -75,6 +75,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
+  // This reference is used to change the <Player /> from the <MusicList />
+  const playerRef = useRef<IMusicList | null>(null);
+
   const UpdateInfo = () => {
     if (props.authorized) {
       return (
@@ -87,11 +90,6 @@ const UserPage: NextPage<IAppProps> = (props) => {
     } else return null
   }
 
-  const Musics = [];
-  useEffect(() => {
-
-  });
-
   return (
     <div className="h-screen w-screen bg-dark-gray-800 text-white/80">
       <Head>
@@ -100,7 +98,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
 
       <div className="container">
         <div className="relative">
-          <div className="flex w-screen bg-gradient-to-b from-blue-900/70 to-transparent border-b-2 border-blue-900">
+          <div className="flex w-screen bg-gradient-to-b from-blue-900/70 to-dark-gray-800 border-b-2 border-blue-900">
             <div className="ml-12 mt-20 mb-8">
               <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} className="rounded-full" />
             </div>
@@ -114,12 +112,12 @@ const UserPage: NextPage<IAppProps> = (props) => {
         <div className="ml-20 mt-20">
           <h1 className="text-3xl">Musics</h1>
           <div id="musics" className="overflow-y-auto h-32">
-            <MusicElement name={props.musics[0].name!} filepath={props.musics[0].file!} />
+            <MusicList musics={props.musics} playerRef={playerRef} />
           </div>
         </div>
       </div>
 
-      <Player />
+      <Player playerRef={playerRef} />
     </div>
   );
 };
