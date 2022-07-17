@@ -4,7 +4,10 @@ import Head from "next/head";
 import Router from "next/router";
 import Cookies from "universal-cookie";
 
-import { UserCircleIcon, LockClosedIcon } from "@heroicons/react/outline"
+// import { UserCircleIcon, LockClosedIcon } from "@heroicons/react/outline"
+// import { FaUserCircle } from 'react-icons/fa';
+import { AiOutlineLock } from 'react-icons/ai';
+import { VscAccount } from 'react-icons/vsc';
 
 const LoginPage: NextPage = () => {
   const cookies = new Cookies();
@@ -53,7 +56,7 @@ const LoginPage: NextPage = () => {
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">
                 <label htmlFor="email_or_username">
-                  <UserCircleIcon className="float-left m-1 w-8 h-8" />
+                  <VscAccount size={36} className="float-left m-1" />
                 </label>
 
                 <input
@@ -69,7 +72,7 @@ const LoginPage: NextPage = () => {
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">
                 <label htmlFor="password">
-                  <LockClosedIcon className="float-left m-1 w-8 h-8" />
+                  <AiOutlineLock size={36} className="float-left m-1" />
                 </label>
                 
                 <input

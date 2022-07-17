@@ -7,9 +7,20 @@ import { IconContext } from 'react-icons'
 
 import IMusic from '../interfaces/music.interface';
 import IMusicList from '../interfaces/musicList.interface'
+import shuffle from '../misc/shuffle';
+import rotateArray from '../misc/rotateArray'
+
+/*
+  TODO:
+  
+  - Make the list not repeat when no repeat is active
+  - Make a music loop when repeat one is active
+
+*/
 
 interface IAppProps {
-  playerRef: React.MutableRefObject<IMusicList | null>
+  musicList: IMusicList | undefined;
+  setMusicList: React.Dispatch<React.SetStateAction<IMusicList | undefined>>
 }
 
 const Player = (props: IAppProps) => {
@@ -19,12 +30,26 @@ const Player = (props: IAppProps) => {
   const animationRef = useRef<number>();  // Animation reference
   
   // Changing the music that is being played
-  useEffect(() => {
-    if (!props.playerRef.current) return;
+  const [src, setSrc] = useState<string>();
 
-    const currentSrc = props.playerRef.current.musicList[props.playerRef.current.index].file!;
-    audioPlayer.current!.src = `${process.env.NEXT_PUBLIC_API_URL}${currentSrc}`;
-  }, [props.playerRef.current?.musicList, props.playerRef.current?.index]);
+  useEffect(() => {
+    if (!props.musicList) return;
+
+    const currentSrc = props.musicList!.musics[props.musicList.index].file!;
+    setSrc(`${process.env.NEXT_PUBLIC_API_URL}${currentSrc}`);
+    
+    if (!isShuffled) {
+      setOrder(rotateArray([... Array(props.musicList.musics.length).keys()], props.musicList.index));
+    }
+
+    audioPlayer.current!.load();
+    if (!isPlaying) { 
+      togglePlayPause();
+    } else {
+      audioPlayer.current?.play();
+      animationRef.current = requestAnimationFrame(updateProgress);
+    }
+  }, [props.musicList]);
 
   // Play and pause
   const [isPlaying, setIsPlaying] = useState(false);
@@ -62,66 +87,122 @@ const Player = (props: IAppProps) => {
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current?.duration!);
-    progressBar.current!.max = seconds.toString();
-
     setDuration(seconds);
-  }, [audioPlayer?.current?.onloadedmetadata, audioPlayer?.current?.readyState]);
+  }, [audioPlayer?.current?.readyState]);
 
   // Current time
   const [currentTime, setCurrentTime] = useState(0);
 
   const changeRange = () => {
     audioPlayer.current!.currentTime = parseInt(progressBar.current?.value!);
-    // setCurrentTime(parseInt(progressBar.current!.value));
-    changeProgressBarColor();
+    setCurrentTime(parseInt(progressBar.current!.value));
   }
 
   const updateProgress = () => {
     progressBar.current!.value = audioPlayer.current!.currentTime.toString();
-    // setCurrentTime(parseInt(progressBar.current!.value));
-    changeProgressBarColor();
+    setCurrentTime(audioPlayer.current!.currentTime);
 
     animationRef.current = requestAnimationFrame(updateProgress);
   }
 
-  const changeProgressBarColor = () => {
-    const value = parseInt(progressBar.current!.value);
-    const progressBarHTML = document.getElementById("progress-bar") as HTMLInputElement;
-    progressBarHTML!.style.background = `linear-gradient(to right, green 0%, green ${value / duration * 100}%, #fff ${value / duration * 100}%, white 100%)`
-    setCurrentTime(value);
+  // Update the progress bar
+  const UpdateProgressBarColor = () => {
+    const value = currentTime / duration * 100;
+    progressBar.current!.style.background = `linear-gradient(to right, green 0%, green ${value}%, #fff ${value}%, white 100%)`;
+  }
+
+  useEffect(() => {
+    UpdateProgressBarColor();
+  }, [currentTime]);
+
+  // Shuffle the list
+  const [order, setOrder] = useState<number[]>();
+  const [isShuffled, setIsShuffled] = useState(false);
+
+  const shuffleList = () => {
+    if (!props.musicList) return;
+
+    const prevValue = isShuffled;
+    setIsShuffled(!prevValue);
+
+    if (!prevValue) {
+      const randomOrder = shuffle([... Array(props.musicList.musics.length).keys()]);
+      randomOrder.splice(randomOrder.indexOf(props.musicList.index), 1);
+      randomOrder.unshift(props.musicList.index);
+  
+      setOrder(randomOrder);
+    } else {
+      // Unshuffles the list - creates a new array and rotates to the current index
+      setOrder(rotateArray([... Array(props.musicList.musics.length).keys()], props.musicList.index));
+    }
+  }
+
+  // Going to the next music after the previous one ended
+  const changeMusic = () => {
+    if (!order || !props.musicList) return;
+
+    const prevOrder = order;
+    const nextMusic = prevOrder[1];
+
+    const rotatedOrder = rotateArray(prevOrder, 1);
+    setOrder(rotatedOrder);
+
+    console.log(rotatedOrder);
+
+    const prevMusics = props.musicList.musics;
+    props.setMusicList({ musics: prevMusics, index: nextMusic });
+  }
+
+  // Skip to the next music
+  const nextMusic = () => {
+    changeMusic();
+  }
+
+  // Skip to the previous music
+  // I don't understand what I did with the rotations, but it works
+  const previousMusic = () => {
+    if (!order || !props.musicList) return;
+
+    const prevOrder = order;
+    const rotatedOrder = rotateArray(prevOrder, -1);
+    const nextMusic = rotatedOrder[0];
+
+    const prevMusics = props.musicList.musics;
+    props.setMusicList({ musics: prevMusics, index: nextMusic });
   }
 
   return (
     <div id="player" className="w-screen fixed bottom-0 border-t-2 border-blue-900 bg-gradient-to-b from-blue-900/50 to-dark-gray-800 h-20 pt-7">
-      <audio ref={audioPlayer} id="audio" autoPlay />
-
+      <audio ref={audioPlayer} id="audio" onEnded={() => changeMusic() }>
+        <source src={src} />
+      </audio>
       
       <div className="flex flex-col items-center">
         {/* Buttons */}
         <IconContext.Provider value={{ className: "mx-1", size: '30px' }}>
           <div className="inline-block absolute top-2">
             {/* Previous */}
-            <button>
+            <button onClick={() => { previousMusic() }} className="hover:text-green-900">
               <BiSkipPrevious />
             </button>
 
             {/* Shuffle */}
-            <button>
-              <BiShuffle />
+            <button onClick={() => shuffleList() }>
+              <BiShuffle className={ isShuffled ? 'text-green-900' : 'text-white hover:text-green-900' } />
             </button>
 
             {/* Play/Pause */}
-            <button onClick={() => togglePlayPause() }>
+            <button onClick={() => togglePlayPause() } className="hover:text-green-900">
               { isPlaying ? <BsPauseFill /> : <BsFillPlayFill />  }
             </button>
 
             {/* Repeat */}
-            <button>
+            <button className="hover:text-green-900">
               <TbRepeat />
             </button>
 
             {/* Next */}
-            <button>
+            <button onClick={() => { nextMusic() }} className="hover:text-green-900">
               <BiSkipNext />
             </button>
           </div>
@@ -136,7 +217,7 @@ const Player = (props: IAppProps) => {
 
           {/* Progress Bar */}
           <div className='mx-2 inline-block relative bottom-0.5 w-72'>
-            <input id="progress-bar" type="range" defaultValue="0" onChange={() => { changeRange() }} ref={progressBar} className="appearance-none audio-progress-bar h-1 w-full rounded outline-none" />
+            <input id="progress-bar" type="range" value={currentTime} max={duration} onChange={() => { changeRange() }} ref={progressBar} className="appearance-none audio-progress-bar h-1 w-full rounded outline-none" />
           </div>
 
           {/* Duration */}

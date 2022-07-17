@@ -5,7 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import cookie from "cookie";
 import Link from 'next/link';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import IMusic from "../../interfaces/music.interface";
 import IAlbum from "../../interfaces/album.interface";
@@ -76,7 +76,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 
 const UserPage: NextPage<IAppProps> = (props) => {
   // This reference is used to change the <Player /> from the <MusicList />
-  const playerRef = useRef<IMusicList | null>(null);
+  // const playerRef = useRef<IMusicList | null>(null);
+  const [musicList, setMusicList] = useState<IMusicList>();
 
   const UpdateInfo = () => {
     if (props.authorized) {
@@ -112,12 +113,12 @@ const UserPage: NextPage<IAppProps> = (props) => {
         <div className="ml-20 mt-20">
           <h1 className="text-3xl">Musics</h1>
           <div id="musics" className="overflow-y-auto h-32">
-            <MusicList musics={props.musics} playerRef={playerRef} />
+            <MusicList musics={props.musics} setMusicList={setMusicList} />
           </div>
         </div>
       </div>
 
-      <Player playerRef={playerRef} />
+      <Player musicList={musicList} setMusicList={setMusicList} />
     </div>
   );
 };

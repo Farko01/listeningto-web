@@ -4,12 +4,12 @@ import IMusicList from '../interfaces/musicList.interface';
 
 interface IAppProps {
   musics: IMusic[],
-  playerRef: React.MutableRefObject<IMusicList | null>
+  setMusicList: React.Dispatch<React.SetStateAction<IMusicList | undefined>>
 }
 
 const MusicList = (props: IAppProps) => {
   const playMusicList = (index: number) => {
-    props.playerRef.current = { musicList: props.musics, index: index }
+    props.setMusicList({ musics: props.musics, index: index });
   }
 
   return (

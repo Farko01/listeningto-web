@@ -1,7 +1,7 @@
 import IMusic from './music.interface';
 
 interface IMusicList {
-  musicList: IMusic[];
+  musics: IMusic[];
   index: number
 }
 
