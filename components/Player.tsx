@@ -4,6 +4,7 @@ import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
 import { FiVolume1, FiVolume2, FiVolumeX } from 'react-icons/fi'
 import { TbRepeat, TbRepeatOnce } from 'react-icons/tb'
 import { IconContext } from 'react-icons'
+import axios from 'axios'
 
 import IMusic from '../interfaces/music.interface';
 import IMusicList from '../interfaces/musicList.interface'
@@ -23,6 +24,13 @@ interface IAppProps {
   setMusicList: React.Dispatch<React.SetStateAction<IMusicList | undefined>>
 }
 
+interface IInfo {
+  authorsName: string[];
+  musicName: string;
+  albumName: string | null;
+  cover: string;
+}
+
 const Player = (props: IAppProps) => {
   // References
   const audioPlayer = useRef() as React.RefObject<HTMLAudioElement>;  // <audio> reference
@@ -35,13 +43,23 @@ const Player = (props: IAppProps) => {
   useEffect(() => {
     if (!props.musicList) return;
 
+    // Clearing previous music info
+    // setInfo(null);
+
+    // Setting src
     const currentSrc = props.musicList!.musics[props.musicList.index].file!;
     setSrc(`${process.env.NEXT_PUBLIC_API_URL}${currentSrc}`);
     
+    // Setting order
     if (!isShuffled) {
       setOrder(rotateArray([... Array(props.musicList.musics.length).keys()], props.musicList.index));
     }
+  }, [props.musicList]);
 
+  useEffect(() => {
+    if (!src) return;
+    
+    // Loading and playing new src
     audioPlayer.current!.load();
     if (!isPlaying) { 
       togglePlayPause();
@@ -49,7 +67,27 @@ const Player = (props: IAppProps) => {
       audioPlayer.current?.play();
       animationRef.current = requestAnimationFrame(updateProgress);
     }
-  }, [props.musicList]);
+  }, [src]);
+
+  // Changing the cover, the music name and author shown in the player
+  // const [info, setInfo] = useState<IInfo | null>(null);
+
+  // useEffect(() => {
+  //   if (!props.musicList) return;
+  //   const musicList = props.musicList!;
+    
+  //   const musicId = musicList.musics[musicList.index]._id!;
+  //   axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`, { headers: { "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept" } }).then((res) => {
+  //     const musicInfo: IInfo = {
+  //       authorsName: musicList.musics[musicList.index].authors!,
+  //       musicName: musicList.musics[musicList.index].name!,
+  //       albumName: res.data ? res.data[0].name : null,
+  //       cover: res.data ? res.data[0].cover : null
+  //     }
+
+  //     setInfo(musicInfo);
+  //   }).catch((e: any) => console.log(e));
+  // }, [props.musicList]);
 
   // Play and pause
   const [isPlaying, setIsPlaying] = useState(false);

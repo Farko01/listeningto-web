@@ -94,7 +94,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
   return (
     <div className="h-screen w-screen bg-dark-gray-800 text-white/80">
       <Head>
-        <title>{props.data.username} - Listeningto</title>
+        <title>{`${props.data.username} - Listeningto`}</title>
       </Head>
 
       <div className="container">
