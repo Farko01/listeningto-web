@@ -2,17 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-.audio-progress-bar::-webkit-slider-thumb {
+.range-input::-webkit-slider-thumb {
   visibility: hidden;
   -webkit-appearance: none;
 }
 
-.audio-progress-bar::-webkit-progress-bar {
-  background-color: green;
-  -webkit-appearance: none;
-}
-
-.audio-progress-bar:hover::-webkit-slider-thumb {
+.range-input:hover::-webkit-slider-thumb {
   visibility: visible;
   width: 12px;
   height: 12px;
@@ -22,11 +17,11 @@
   -webkit-appearance: none;
 }
 
-.audio-progress-bar::-moz-range-thumb {
+.range-input::-moz-range-thumb {
   visibility: hidden;
 }
 
-.audio-progress-bar:hover::-moz-range-thumb {
+.range-input:hover::-moz-range-thumb {
   visibility: visible;
   width: 12px;
   height: 12px;
