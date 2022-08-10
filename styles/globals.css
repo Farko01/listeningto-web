@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 .range-input::-webkit-slider-thumb {
   visibility: hidden;
   -webkit-appearance: none;

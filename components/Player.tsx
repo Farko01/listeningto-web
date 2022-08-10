@@ -11,6 +11,7 @@ import Image from 'next/image'
 import IMusic from '../interfaces/music.interface';
 import IMusicList from '../interfaces/musicList.interface'
 import shuffle from '../misc/shuffle';
+import IUser from '../interfaces/user.interface'
 
 interface IAppProps {
   musicList: IMusicList | undefined;
@@ -18,7 +19,7 @@ interface IAppProps {
 }
 
 interface IInfo {
-  authorsName: string[];
+  authors: IUser[];
   musicName: string;
   albumName: string | null;
   cover: string;
@@ -94,15 +95,16 @@ const Player = (props: IAppProps) => {
   // Changing the cover, the music name and author shown in the player
   useEffect(() => {
     if (!props.musicList) return;
+
     const musicList = props.musicList!;
     
     const musicId = musicList.musics[musicList.index]._id!;
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`).then((res) => {
       const musicInfo: IInfo = {
-        authorsName: musicList.musics[musicList.index].authors!,
+        authors: musicList.musics[musicList.index].authors!,
         musicName: musicList.musics[musicList.index].name!,
-        albumName: res.data ? res.data[0].name : null,
-        cover: res.data ? res.data[0].cover : null
+        albumName: res.data ? res.data.name : null,
+        cover: res.data ? res.data.cover : null
       }
 
       setInfo(musicInfo);
@@ -244,7 +246,7 @@ const Player = (props: IAppProps) => {
     if (isMuted) setIsMuted(false);
 
     // Changing range background
-    e.target.style.background = `linear-gradient(to right, blue 0%, blue ${value}%, #fff ${value}%, white 100%)`;
+    e.target.style.background = `linear-gradient(to right, #1e3b8a 0%, #1e3b8a ${value}%, #fff ${value}%, white 100%)`;
   }
 
   const handleMuted = () => {
@@ -277,88 +279,109 @@ const Player = (props: IAppProps) => {
   // Music info
   const MusicInfo = () => {
     if (info) {
+      const displayAuthors = () => {
+        let displayNames = "";
+
+        for (let i in info.authors) {
+          if (parseInt(i) != info.authors.length - 1) {
+
+            displayNames += `${info.authors[i].username!}, `;
+          } else displayNames += info.authors[i].username!;
+        }
+
+        return displayNames;
+      }
+
       return (
-        <div className="absolute left-3">
-          <h1 className="w-full text-sm block">{info.musicName}</h1>
+        <div className="absolute left-4 flex flex-row items-center justify-start w-1/4 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 shrink-0">
+              <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info.cover}`} width="100%" height="100%" objectFit="cover" />
+            </div>
+
+            <div>
+              <p className="text-ellipsis overflow-hidden hover:underline">
+                {info.musicName}
+              </p>
+              <p className="text-ellipsis overflow-hidden hover:underline">
+                {displayAuthors()}
+              </p>
+            </div>
+          </div>
         </div>
       )
     } else return null
   }
 
   return (
-    <div id="player" className="w-screen fixed bottom-0 border-t-2 border-blue-900 bg-dark-gray-800 bg-gradient-to-b from-blue-900/50 to-dark-gray-800 h-20 pt-7">
-      <audio ref={audioPlayer} id="audio"  onEnded={() => changeMusic() }>
+    <div className="absolute bottom-0">
+      <audio ref={audioPlayer} id="audio" onEnded={() => changeMusic() }>
         <source src={src} />
       </audio>
 
-      {/* Music Info */}
-      <MusicInfo />
-      
-      <div className="flex flex-col items-center">
-        {/* Buttons */}
-        <IconContext.Provider value={{ className: "mx-1", size: '30px' }}>
-          <div className="inline-block absolute top-2">
-            {/* Previous */}
-            <button onClick={() => { previousMusic() }} className="hover:text-green-900">
-              <BiSkipPrevious />
-            </button>
+      <div className="relative bg-[#030304] bg-gradient-to-b from-blue-900/5 border-top border-t-2 border-white/5 w-screen h-28 flex justify-center items-center p-4">
+        {/* Music Info */}
+        <MusicInfo />
+        
+        <div className="w-full flex flex-col items-center gap-6">
+          {/* Buttons */}
+          <IconContext.Provider value={{ size: '30px' }}>
+            <div className="flex items-center gap-3 -mb-4">
+              {/* Previous */}
+              <button onClick={() => { previousMusic() }} className="hover:text-green-900">
+                <BiSkipPrevious />
+              </button>
+              {/* Shuffle */}
+              <button onClick={() => shuffleList() }>
+                <BiShuffle className={ isShuffled ? 'text-green-900' : 'text-white hover:text-green-900' } />
+              </button>
+              {/* Play/Pause */}
+              <button onClick={() => togglePlayPause() } className="hover:text-green-900" >
+                { isPlaying ? <BsPauseFill/> : <BsFillPlayFill /> }
+              </button>
+              {/* Repeat */}
+              <button onClick={() => changeRepeat() } className="hover:text-green-900">
+                { repeat == Repeat.NoRepeat ? <TbRepeatOff /> : repeat == Repeat.Repeat ? <TbRepeat /> : <TbRepeatOnce /> }
+              </button>
+              {/* Next */}
+              <button onClick={() => { nextMusic() }} className="hover:text-green-900">
+                <BiSkipNext />
+              </button>
+            </div>
+          </IconContext.Provider>
 
-            {/* Shuffle */}
-            <button onClick={() => shuffleList() }>
-              <BiShuffle className={ isShuffled ? 'text-green-900' : 'text-white hover:text-green-900' } />
-            </button>
-
-            {/* Play/Pause */}
-            <button onClick={() => togglePlayPause() } className="hover:text-green-900">
-              { isPlaying ? <BsPauseFill /> : <BsFillPlayFill />  }
-            </button>
-
-            {/* Repeat */}
-            <button onClick={() => changeRepeat() } className="hover:text-green-900">
-              {/* <TbRepeat /> */}
-              { repeat == Repeat.NoRepeat ? <TbRepeatOff /> : repeat == Repeat.Repeat ? <TbRepeat /> : <TbRepeatOnce /> }
-            </button>
-
-            {/* Next */}
-            <button onClick={() => { nextMusic() }} className="hover:text-green-900">
-              <BiSkipNext />
-            </button>
-          </div>
-        </IconContext.Provider>
-
-        {/* Current Time / Progress Bar / Duration */}
-        <div className="block ml-5 mt-3">
-          {/* Current Time */}
-          <div className='inline-block mx-2 font-mono text-xs'>
-            {formatTime(currentTime)}
-          </div>
-
-          {/* Progress Bar */}
-          <div className='mx-2 inline-block relative bottom-0.5 w-72'>
-            <input type="range" value={currentTime} max={duration} onChange={() => { changeRange() }} ref={progressBar} className="appearance-none range-input h-1 w-full rounded outline-none" />
-          </div>
-
-          {/* Duration */}
-          <div className='inline-block mx-2 font-mono text-xs'>
-            {formatTime(duration)}
+          {/* Current Time / Progress Bar / Duration */}
+          <div className="w-full flex items-center justify-center gap-4">
+            {/* Current Time */}
+            <span>
+              {formatTime(currentTime)}
+            </span>
+            {/* Progress Bar */}
+            <div className="w-1/3">
+              <input type="range" value={currentTime} max={duration} onChange={() => { changeRange() }} ref={progressBar} className="appearance-none range-input h-1 mb-1 w-full rounded outline-none" />
+            </div>
+            {/* Duration */}
+            <span>
+              {formatTime(duration)}
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Volume */}
-      <div className="absolute block bottom-5 right-3">
-        <IconContext.Provider value={{ className: "mx-1", size: "30px" }}>
-          <div className="inline-block mx-1">
-            <button onClick={() => handleMuted() }>
-              {/* I can't just use a local component to render the icons since it will not work, so yeah it's a mess */}
-              { isMuted ? <FiVolumeX /> : volume > 50 ? <FiVolume2 /> : volume > 0 ? <FiVolume1 /> : <FiVolume /> }
-            </button>
-          </div>
+        {/* Volume */}
+        <div className="absolute right-4 flex flex-row gap-4">
+          <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
+            <div className="flex items-center gap-2">
+              <button onClick={() => handleMuted() }>
+                {/* I can't just use a local component to render the icons since it will not work, so yeah it's a mess */}
+                { isMuted ? <FiVolumeX /> : volume > 50 ? <FiVolume2 /> : volume > 0 ? <FiVolume1 /> : <FiVolume /> }
+              </button>
 
-          <div className="inline-block relative mx-1 bottom-3 w-48">
-            <input type="range" value={volume} step={1} max={100} onChange={(e) => handleVolume(e) } className="bg-blue-900 appearance-none range-input h-1 w-full rounded outline-none" />
-          </div>
-        </IconContext.Provider>
+              <div className="w-48">
+                <input type="range" value={volume} step={1} max={100} onChange={(e) => handleVolume(e) } className="bg-blue-900 appearance-none range-input h-1 mb-1 w-full rounded outline-none" />
+              </div>
+            </div>
+          </IconContext.Provider>
+        </div>
       </div>
     </div>
   )

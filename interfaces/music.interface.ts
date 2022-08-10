@@ -1,6 +1,8 @@
+import IUser from './user.interface'
+
 interface IMusic {
   readonly _id?: string;
-  authors?: string[];
+  authors?: IUser[];
   name?: string;
   file?: string;
   cover?: string;

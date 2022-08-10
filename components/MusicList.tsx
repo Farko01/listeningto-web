@@ -15,7 +15,7 @@ const MusicList = (props: IAppProps) => {
   return (
     <div>
       { props.musics.map((music, i) => {
-        return <div key={i} onClick={() => playMusicList(i) } className="bg-dark-gray-800 hover:bg-dark-gray-600">
+        return <div key={i} onClick={() => playMusicList(i) } className="hover:bg-dark-gray-600">
           {music.name}
         </div>
       }) }

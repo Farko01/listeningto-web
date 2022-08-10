@@ -56,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
   const musics = await axios.get(musics_url);
 
   // Request de álbuns
-  const albuns_url = `${process.env.NEXT_PUBLIC_API_URL}/user/${params!.id}/albuns`;
+  const albuns_url = `${process.env.NEXT_PUBLIC_API_URL}/user/${params!.id}/albums`;
   const albuns = await axios.get(albuns_url);
 
   // Request de playlists
@@ -92,16 +92,16 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-screen w-screen bg-dark-gray-800 text-white/80">
+    <div className="h-screen w-screen bg-[#030304] bg-gradient-to-br from-blue-900/5 text-white/80">
       <Head>
         <title>{`${props.data.username} - Listeningto`}</title>
       </Head>
 
       <div className="container">
         <div className="relative">
-          <div className="flex w-screen bg-gradient-to-b from-blue-900/70 to-dark-gray-800 border-b-2 border-blue-900">
-            <div className="ml-12 mt-20 mb-8">
-              <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} className="rounded-full" />
+          <div className="flex w-screen bg-gradient-to-b border-b-2 border-blue-900">
+            <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
+              <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} layout={"responsive"} className="rounded-full" />
             </div>
             <h1 className="mt-48 ml-12 text-5xl antialiased text-white/100">{props.data.username}</h1>
             <div className="absolute bottom-10 right-0">
