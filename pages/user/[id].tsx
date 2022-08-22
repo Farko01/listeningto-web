@@ -92,7 +92,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#030304] bg-gradient-to-br from-blue-900/5 text-white/80">
+    <div className="h-screen w-screen bg-[#030304] bg-gradient-to-br from-blue-900/30 text-white/80">
       <Head>
         <title>{`${props.data.username} - Listeningto`}</title>
       </Head>
@@ -110,9 +110,9 @@ const UserPage: NextPage<IAppProps> = (props) => {
           </div>
         </div>
 
-        <div className="ml-20 mt-20">
-          <h1 className="text-3xl">Musics</h1>
-          <div id="musics" className="overflow-y-auto h-32">
+        <div className="ml-20 mt-20 border-solid border-4 border-sky-500 rounded-lg ">
+          <h1 className="text-3xl border-b-2 border-sky-500 pb-2 py-4 px-1 bg-bl">Musics</h1>
+          <div id="musics" className="overflow-y-auto h-32 py-4 px-1 bg-blue-700">
             <MusicList musics={props.musics} setMusicList={setMusicList} />
           </div>
         </div>
