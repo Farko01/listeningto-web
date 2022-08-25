@@ -3,9 +3,8 @@ import { FormEvent, useState, useEffect } from "react";
 import Head from "next/head";
 import Router from "next/router";
 import Cookies from "universal-cookie";
+import Image from 'next/image';
 
-// import { UserCircleIcon, LockClosedIcon } from "@heroicons/react/outline"
-// import { FaUserCircle } from 'react-icons/fa';
 import { AiOutlineLock } from 'react-icons/ai';
 import { VscAccount } from 'react-icons/vsc';
 
@@ -45,13 +44,16 @@ const LoginPage: NextPage = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-dark-gray-900">
+    <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30">
       <Head>
         <title>Login - Listeningto</title>
       </Head>
 
       <div className="container m-auto h-screen flex flex-col items-center">
-        <div className="border-2 border-dark-gray-800 rounded p-8 m-auto">
+        <div className="border-2 border-white/20 bg-primary rounded p-8 m-auto">
+          <div className="flex items-center justify-center my-8">
+            <Image src={"http://localhost:3000/favicon.ico"} width={128} height={128} className="mx-auto" />
+          </div>
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">
@@ -100,7 +102,7 @@ const LoginPage: NextPage = () => {
               <input 
                 type="submit" 
                 value="Login" 
-                className="w-72 h-12 bg-blue-800 hover:bg-blue-900 hover:cursor-pointer text-white font-semibold rounded" 
+                className="w-72 h-12 bg-blue-700 hover:bg-blue-800 hover:cursor-pointer text-white font-semibold rounded" 
               />
             </div>
           </form>

@@ -318,12 +318,12 @@ const Player = (props: IAppProps) => {
       <audio ref={audioPlayer} id="audio" onEnded={() => changeMusic() }>
         <source src={src} />
       </audio>
-
-      <div className="relative bg-[#030304] bg-gradient-to-b from-blue-900/5 border-top border-t-2 border-white/5 w-screen h-28 flex justify-center items-center p-4">
+      {/* parte do tailwind do site */}
+      <div className="relative bg-primary bg-gradient-to-b from-blue-900/30 border-top border-t-2 border-white/20 w-screen h-28 flex justify-center items-center p-4">
         {/* Music Info */}
         <MusicInfo />
         
-        <div className="w-full flex flex-col items-center gap-6">
+        <div className="w-full flex flex-col items-center gap-6 md:flex">
           {/* Buttons */}
           <IconContext.Provider value={{ size: '30px' }}>
             <div className="flex items-center gap-3 -mb-4">
@@ -368,7 +368,7 @@ const Player = (props: IAppProps) => {
         </div>
 
         {/* Volume */}
-        <div className="absolute right-4 flex flex-row gap-4">
+        <div className="sm:flex md:shrink-0">
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
               <button onClick={() => handleMuted() }>
