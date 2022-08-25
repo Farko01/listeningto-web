@@ -28,7 +28,7 @@ const SignupPage: NextPage = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (password !== cPassword) return setAlert("The passwords are different");
+    if (password !== cPassword) return setAlert("As senhas são diferentes");
 
     fetch("/api/user/signup", {
       method: 'POST',

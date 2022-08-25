@@ -5,7 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import cookie from "cookie";
 import Link from 'next/link';
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import IMusic from "../../interfaces/music.interface";
 import IAlbum from "../../interfaces/album.interface";
@@ -75,8 +75,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
-  // This reference is used to change the <Player /> from the <MusicList />
-  // const playerRef = useRef<IMusicList | null>(null);
   const [musicList, setMusicList] = useState<IMusicList>();
 
   const UpdateInfo = () => {
@@ -92,9 +90,14 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#030304] bg-gradient-to-br from-blue-900/30 text-white/80">
+    <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30 text-white/80">
       <Head>
         <title>{`${props.data.username} - Listeningto`}</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed&display=swap" rel="stylesheet" /> 
+        <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet" /> 
       </Head>
 
       <div className="container">
@@ -110,14 +113,14 @@ const UserPage: NextPage<IAppProps> = (props) => {
           </div>
         </div>
 
-        <div className="ml-20 mt-20 border-solid border-4 border-sky-500 rounded-lg ">
-          <h1 className="text-3xl border-b-2 border-sky-500 pb-2 py-4 px-1 bg-bl">Musics</h1>
-          <div id="musics" className="overflow-y-auto h-32 py-4 px-1 bg-blue-700">
+        <div className="mt-20 ml-20 bg-gray-800 bg-gradient-to-br from-gray-600 border-8 border-gray-900 p-4">
+          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Músicas</h1>
+          <div id="musics" className="">
             <MusicList musics={props.musics} setMusicList={setMusicList} />
           </div>
         </div>
       </div>
-
+''
       <Player musicList={musicList} setMusicList={setMusicList} />
     </div>
   );
