@@ -66,7 +66,7 @@ const LoginPage: NextPage = () => {
                   type="text"
                   placeholder="Email ou nome de usuário"
                   onChange={(e) => setEOU(e.target.value)}
-                  className="bg-white border-none appearance-none focus:ring-0"
+                  className="bg-white w-auto border-none appearance-none focus:ring-0"
                   name="email_or_username"
                 />
               </div>
@@ -82,7 +82,7 @@ const LoginPage: NextPage = () => {
                   type="password"
                   placeholder="Senha"
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white border-none appearance-none focus:ring-0"
+                  className="bg-white w-auto border-none appearance-none focus:ring-0"
                   name="password"
                 />
               </div>

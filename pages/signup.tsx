@@ -9,6 +9,7 @@ import { VscAccount } from 'react-icons/vsc';
 import { HiOutlineMail } from 'react-icons/hi';
 import { AiOutlineLock } from 'react-icons/ai';
 import { BsArrowClockwise } from 'react-icons/bs';
+import Link from "next/link";
 
 const SignupPage: NextPage = () => {
   const cookies = new Cookies();
@@ -130,6 +131,7 @@ const SignupPage: NextPage = () => {
               />
             </div>
           </form>
+          <h2 className="text-white/80 text-center mt-2">Já possui uma conta? <Link href="/login"><a className="text-blue-900/60 hover:text-blue-900/80">Entre!</a></Link></h2>
           <h2 id="alert" className="text-red-800 text-center mt-2">{alert}</h2>
         </div>
       </div>

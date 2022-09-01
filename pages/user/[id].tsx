@@ -14,6 +14,7 @@ import IMusicList from "../../interfaces/musicList.interface";
 
 import MusicList from '../../components/MusicList';
 import Player from '../../components/Player';
+import { usePlayer, useUpdatePlayer } from "../../contexts/PlayerContext";
 
 interface IAuthToken {
   id: string;
@@ -75,14 +76,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
-  const [musicList, setMusicList] = useState<IMusicList>();
+  const musicList = usePlayer();
+  const setMusicList = useUpdatePlayer()!;
 
   const UpdateInfo = () => {
     if (props.authorized) {
       return (
         <button className="h-12 w-28 text-white font-semibold border border-blue-900 bg-dark-gray-800 hover:bg-dark-gray-600 rounded-xl">
           <Link href={`${props.data._id}/edit`}>
-            Edit Profile
+            Editar Perfil
           </Link>
         </button>
       )
@@ -93,35 +95,28 @@ const UserPage: NextPage<IAppProps> = (props) => {
     <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30 text-white/80">
       <Head>
         <title>{`${props.data.username} - Listeningto`}</title>
-
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-        <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed&display=swap" rel="stylesheet" /> 
-        <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet" /> 
       </Head>
 
       <div className="container">
-        <div className="relative">
-          <div className="flex w-screen bg-gradient-to-b border-b-2 border-blue-900">
-            <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
-              <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} layout={"responsive"} className="rounded-full" />
-            </div>
-            <h1 className="mt-48 ml-12 text-5xl antialiased text-white/100">{props.data.username}</h1>
-            <div className="absolute bottom-10 right-0">
-              <UpdateInfo />
-            </div>
+        <div className="relative flex w-screen border-b-2 border-blue-900">
+          <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
+            <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} layout={"responsive"} className="rounded-full" />
+          </div>
+          <h1 className="mt-48 ml-12 text-5xl antialiased text-white/100">{props.data.username}</h1>
+          <div className="absolute bottom-10 right-10">
+            <UpdateInfo />
           </div>
         </div>
 
         <div className="mt-20 ml-20 bg-gray-800 bg-gradient-to-br from-gray-600 border-8 border-gray-900 p-4">
           <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Músicas</h1>
-          <div id="musics" className="">
-            <MusicList musics={props.musics} setMusicList={setMusicList} />
+
+          <div>
+            <MusicList musics={props.musics} />
           </div>
         </div>
       </div>
-''
-      <Player musicList={musicList} setMusicList={setMusicList} />
+      <Player />
     </div>
   );
 };

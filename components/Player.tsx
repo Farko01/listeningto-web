@@ -8,15 +8,9 @@ import axios from 'axios'
 
 import Image from 'next/image'
 
-import IMusic from '../interfaces/music.interface';
-import IMusicList from '../interfaces/musicList.interface'
 import shuffle from '../misc/shuffle';
 import IUser from '../interfaces/user.interface'
-
-interface IAppProps {
-  musicList: IMusicList | undefined;
-  setMusicList: React.Dispatch<React.SetStateAction<IMusicList | undefined>>
-}
+import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
 
 interface IInfo {
   authors: IUser[];
@@ -31,41 +25,31 @@ enum Repeat {
   RepeatOne = 2
 }
 
-const Player = (props: IAppProps) => {
+const Player = () => {
+  // Context
+  const { musicList, src, info, isPlaying, duration, currentTime, order, orderIndex, isShuffled, volume, isMuted, repeat, autoPlay } = usePlayer()!;
+  const { setMusicList, setSrc, setInfo, setIsPlaying, setDuration, setCurrentTime, setOrder, setOrderIndex, setIsShuffled, setVolume, setIsMuted, setRepeat, setAutoplay } = useUpdatePlayer()!;
+
   // References
   const audioPlayer = useRef() as React.RefObject<HTMLAudioElement>;  // <audio> reference
   const progressBar = useRef() as React.RefObject<HTMLInputElement>;  // Progress bar reference
   const animationRef = useRef<number>();  // Animation reference
 
-  // States
-  const [src, setSrc] = useState<string>();
-  const [info, setInfo] = useState<IInfo | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [order, setOrder] = useState<number[]>();
-  const [orderIndex, setOrderIndex] = useState(0);
-  const [isShuffled, setIsShuffled] = useState(false);
-  const [volume, setVolume] = useState(100);
-  const [isMuted, setIsMuted] = useState(false);
-  const [repeat, setRepeat] = useState(Repeat.NoRepeat);
-  const [autoPlay, setAutoplay] = useState(true); // This state is only used for not autoplaying when looping the list with the repeat state being set to NoRepeat
-
   // Changing the music that is being played
   useEffect(() => {
-    if (!props.musicList) return;
+    if (!musicList) return;
     
     // Setting src
-    const currentSrc = props.musicList!.musics[props.musicList.index].file!;
+    const currentSrc = musicList!.musics[ musicList.index].file!;
     setSrc(`${process.env.NEXT_PUBLIC_API_URL}${currentSrc}`);
     
     // Setting order
     if (!isShuffled) {
-      const newOrder = [... Array(props.musicList.musics.length).keys()];
+      const newOrder = [... Array(musicList.musics.length).keys()];
       setOrder(newOrder);
-      setOrderIndex(newOrder.indexOf(props.musicList.index));
+      setOrderIndex(newOrder.indexOf(musicList.index));
     }
-  }, [props.musicList]);
+  }, [musicList]);
 
   useEffect(() => {
     if (!src) return;
@@ -94,9 +78,7 @@ const Player = (props: IAppProps) => {
 
   // Changing the cover, the music name and author shown in the player
   useEffect(() => {
-    if (!props.musicList) return;
-
-    const musicList = props.musicList!;
+    if (!musicList) return;
     
     const musicId = musicList.musics[musicList.index]._id!;
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`).then((res) => {
@@ -109,7 +91,7 @@ const Player = (props: IAppProps) => {
 
       setInfo(musicInfo);
     }).catch((e: any) => console.log(e));
-  }, [props.musicList]);
+  }, [ musicList]);
 
   // Play and pause
   const togglePlayPause = () => {
@@ -171,29 +153,29 @@ const Player = (props: IAppProps) => {
 
   // Shuffle the list
   const shuffleList = () => {
-    if (!props.musicList) return;
+    if (!musicList) return;
 
     const prevValue = isShuffled;
     setIsShuffled(!prevValue);
 
     if (!prevValue) {
       // Shuffles the list
-      const randomOrder = shuffle([... Array(props.musicList.musics.length).keys()]);
+      const randomOrder = shuffle([... Array( musicList.musics.length).keys()]);
       setOrder(randomOrder);
 
-      setOrderIndex(randomOrder.indexOf(props.musicList.index));
+      setOrderIndex(randomOrder.indexOf( musicList.index));
     } else {
       // Unshuffles the list
-      const normalOrder = [... Array(props.musicList.musics.length).keys()];
+      const normalOrder = [... Array( musicList.musics.length).keys()];
 
       setOrder(normalOrder);
-      setOrderIndex(normalOrder.indexOf(props.musicList.index));
+      setOrderIndex(normalOrder.indexOf( musicList.index));
     }
   }
 
   // Going to the next music after the previous one ended
   const changeMusic = () => {
-    if (!order || !props.musicList) return;
+    if (!order || !musicList) return;
 
     // Repeating the same music if repeat is set to RepeatOne
     if (repeat == Repeat.RepeatOne) {
@@ -204,14 +186,14 @@ const Player = (props: IAppProps) => {
     }
 
     const prevIndex = orderIndex;
-    const newIndex = prevIndex == props.musicList.musics.length - 1 ? 0 : prevIndex + 1;
+    const newIndex = prevIndex ==  musicList.musics.length - 1 ? 0 : prevIndex + 1;
     setOrderIndex(newIndex);
 
     // Not autoplaying if repeat is set to NoRepeat
     if (newIndex == 0 && repeat == Repeat.NoRepeat) setAutoplay(false);
     
-    const prevMusics = props.musicList.musics;
-    props.setMusicList({ musics: prevMusics, index: order[newIndex] });
+    const prevMusics =  musicList.musics;
+    setMusicList({ musics: prevMusics, index: order[newIndex] });
   }
 
   // Skip to the next music
@@ -223,15 +205,15 @@ const Player = (props: IAppProps) => {
 
   // Go to the previous music
   const previousMusic = () => {
-    if (!order || !props.musicList) return;
+    if (!order || ! musicList) return;
     if (repeat == Repeat.RepeatOne) setRepeat(Repeat.Repeat);
 
     const prevIndex = orderIndex;
-    const newIndex = prevIndex == 0 ? props.musicList.musics.length - 1 : prevIndex - 1;
+    const newIndex = prevIndex == 0 ?  musicList.musics.length - 1 : prevIndex - 1;
     setOrderIndex(newIndex);
 
-    const prevMusics = props.musicList.musics;
-    props.setMusicList({ musics: prevMusics, index: order[newIndex] });
+    const prevMusics =  musicList.musics;
+     setMusicList({ musics: prevMusics, index: order[newIndex] });
   }
 
   // Manipulate volume
