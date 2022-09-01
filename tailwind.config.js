@@ -7,6 +7,10 @@ module.exports = {
     extend: {
       colors: {
         primary: "#030304"
+      },
+      fontFamily: {
+        barlow: ['Barlow Semi Condensed', 'sans-serif'],
+        fjalla: ['Fjalla One', 'sans-serif']
       }
     },
   },

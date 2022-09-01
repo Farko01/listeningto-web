@@ -4,9 +4,10 @@ import Head from "next/head";
 import Router from "next/router";
 import Cookies from "universal-cookie";
 import Image from 'next/image';
+import Link from 'next/link';
 
-import { AiOutlineLock } from 'react-icons/ai';
 import { VscAccount } from 'react-icons/vsc';
+import { AiOutlineLock } from 'react-icons/ai';
 
 const LoginPage: NextPage = () => {
   const cookies = new Cookies();
@@ -33,14 +34,13 @@ const LoginPage: NextPage = () => {
       method: "POST",
       body: JSON.stringify({ email_or_username, password }),
       headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message) return setAlert(data.message);
+    }).then((res) => res.json())
+    .then((data) => {
+      if (data.message) return setAlert(data.message);
 
-        cookies.set("auth", data.auth, { expires: rememberMe ? new Date(Date.now() + 315360000000) : undefined });
-        Router.push(`user/${data.user._id}`)
-      });
+      cookies.set("auth", data.auth, { expires: rememberMe ? new Date(Date.now() + 315360000000) : undefined });
+      Router.push(`user/${data.user._id}`)
+    });
   };
 
   return (
@@ -50,10 +50,11 @@ const LoginPage: NextPage = () => {
       </Head>
 
       <div className="container m-auto h-screen flex flex-col items-center">
-        <div className="border-2 border-white/20 bg-primary rounded p-8 m-auto">
+        <div className="border-2 border-white/20 bg-primary rounded p-8 m-auto w-[28%]">
           <div className="flex items-center justify-center my-8">
             <Image src={"http://localhost:3000/favicon.ico"} width={128} height={128} className="mx-auto" />
           </div>
+          <h1 className="text-white/80 text-center mb-8 -mt-4 text-2xl">Login</h1>
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="block m-4">
               <div className="bg-white flex items-center w-auto h-12 rounded">
@@ -63,9 +64,9 @@ const LoginPage: NextPage = () => {
 
                 <input
                   type="text"
-                  placeholder="Username or email address"
+                  placeholder="Email ou nome de usuário"
                   onChange={(e) => setEOU(e.target.value)}
-                  className="bg-white border-none appearance-none focus:ring-0"
+                  className="bg-white w-auto border-none appearance-none focus:ring-0"
                   name="email_or_username"
                 />
               </div>
@@ -79,9 +80,9 @@ const LoginPage: NextPage = () => {
                 
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder="Senha"
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white border-none appearance-none focus:ring-0"
+                  className="bg-white w-auto border-none appearance-none focus:ring-0"
                   name="password"
                 />
               </div>
@@ -95,18 +96,19 @@ const LoginPage: NextPage = () => {
                 name="rememberMe"
                 className="appearance-none rounded accent-blue-900"
               />
-              <label className="text-white ml-2" htmlFor="rememberMe">Remember me</label>
+              <label className="text-white/80 ml-2" htmlFor="rememberMe">Lembrar de mim</label>
             </div>
 
             <div className="block m-4">
               <input 
                 type="submit" 
                 value="Login" 
-                className="w-72 h-12 bg-blue-700 hover:bg-blue-800 hover:cursor-pointer text-white font-semibold rounded" 
+                className="w-full h-12 bg-blue-900/60 hover:bg-blue-900/80 hover:cursor-pointer text-white font-semibold rounded" 
               />
             </div>
           </form>
-          <h2 id="alert" className="text-red-800">{alert}</h2>
+          <h2 className="text-white/80 text-center mt-2">Novo aqui? <Link href="/signup"><a className="text-blue-900/60 hover:text-blue-900/80">Crie uma conta!</a></Link></h2>
+          <h2 id="alert" className="text-red-800 text-center mt-2">{alert}</h2>
         </div>
       </div>
     </div>
