@@ -1,6 +1,5 @@
 import React from 'react'
 import IMusic from '../interfaces/music.interface';
-import IMusicList from '../interfaces/musicList.interface';
 import Link from 'next/link';
 import { useUpdatePlayer } from '../contexts/PlayerContext';
 
@@ -18,7 +17,7 @@ const MusicList = (props: IAppProps) => {
   return (
     <div>
       { props.musics.map((music, i) => {
-        return <div key={i} onClick={() => playMusicList(i) } className="hover:bg-blue-900 font-barlow">
+        return <div key={i} onClick={() => playMusicList(i) } className="hover:bg-white/20 font-barlow">
           <Link href={`../music/${music._id}`}>
             <a className="cursor-pointer">
               { music.name }

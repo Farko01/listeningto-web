@@ -144,7 +144,7 @@ const Player = () => {
   // Update the progress bar
   const UpdateProgressBarColor = () => {
     const value = currentTime / duration * 100;
-    progressBar.current!.style.background = `linear-gradient(to right, green 0%, green ${value}%, #fff ${value}%, white 100%)`;
+    progressBar.current!.style.background = `linear-gradient(to right, #1e3b8a 0%, #1e3b8a ${value}%, #fff ${value}%, white 100%)`;
   }
 
   useEffect(() => {
@@ -296,12 +296,12 @@ const Player = () => {
   }
 
   return (
-    <div className="absolute bottom-0">
+    <div className="absolute bottom-0 left-0 w-full text-white">
       <audio ref={audioPlayer} id="audio" onEnded={() => changeMusic() }>
         <source src={src} />
       </audio>
       {/* parte do tailwind do site */}
-      <div className="relative bg-primary bg-gradient-to-b from-blue-900/30 border-top border-t-2 border-white/20 w-screen h-28 flex justify-center items-center p-4">
+      <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-top border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
         {/* Music Info */}
         <MusicInfo />
         
@@ -310,23 +310,23 @@ const Player = () => {
           <IconContext.Provider value={{ size: '30px' }}>
             <div className="flex items-center gap-3 -mb-4">
               {/* Previous */}
-              <button onClick={() => { previousMusic() }} className="hover:text-green-900">
+              <button onClick={() => { previousMusic() }} className="hover:text-blue-900">
                 <BiSkipPrevious />
               </button>
               {/* Shuffle */}
               <button onClick={() => shuffleList() }>
-                <BiShuffle className={ isShuffled ? 'text-green-900' : 'text-white hover:text-green-900' } />
+                <BiShuffle className={ isShuffled ? 'text-blue-900' : 'text-white hover:text-blue-900' } />
               </button>
               {/* Play/Pause */}
-              <button onClick={() => togglePlayPause() } className="hover:text-green-900" >
+              <button onClick={() => togglePlayPause() } className="hover:text-blue-900" >
                 { isPlaying ? <BsPauseFill/> : <BsFillPlayFill /> }
               </button>
               {/* Repeat */}
-              <button onClick={() => changeRepeat() } className="hover:text-green-900">
+              <button onClick={() => changeRepeat() } className="hover:text-blue-900">
                 { repeat == Repeat.NoRepeat ? <TbRepeatOff /> : repeat == Repeat.Repeat ? <TbRepeat /> : <TbRepeatOnce /> }
               </button>
               {/* Next */}
-              <button onClick={() => { nextMusic() }} className="hover:text-green-900">
+              <button onClick={() => { nextMusic() }} className="hover:text-blue-900">
                 <BiSkipNext />
               </button>
             </div>

@@ -15,6 +15,7 @@ import IMusicList from "../../interfaces/musicList.interface";
 import MusicList from '../../components/MusicList';
 import Player from '../../components/Player';
 import { usePlayer, useUpdatePlayer } from "../../contexts/PlayerContext";
+import Card from "../../components/Card";
 
 interface IAuthToken {
   id: string;
@@ -76,9 +77,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
-  const musicList = usePlayer();
-  const setMusicList = useUpdatePlayer()!;
-
   const UpdateInfo = () => {
     if (props.authorized) {
       return (
@@ -92,33 +90,40 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30 text-white/80">
+    <div className="w-screen h-screen bg-primary bg-gradient-to-br from-blue-900/60 text-white">
       <Head>
-        <title>{`${props.data.username} - Listeningto`}</title>
+        <title>{props.data.username} - Listeningto</title>
       </Head>
 
-      <div className="container">
-        <div className="relative flex w-screen border-b-2 border-blue-900">
-          <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
-            <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} layout={"responsive"} className="rounded-full" />
+      <div className="flex flex-col">
+        {/* Header */}
+        <div className="relative flex w-full border-b-2 border-blue-900 h-96">
+          <div className="mt-20 ml-20 h-64 w-64">
+            <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} className="rounded-full" />
           </div>
-          <h1 className="mt-48 ml-12 text-5xl antialiased text-white/100">{props.data.username}</h1>
-          <div className="absolute bottom-10 right-10">
+          <h1 className="text-5xl antialiased mt-48 ml-16">{props.data.username}</h1>
+
+          <div className="absolute bottom-10 right-40">
             <UpdateInfo />
           </div>
         </div>
 
-        <div className="mt-20 ml-20 bg-gray-800 bg-gradient-to-br from-gray-600 border-8 border-gray-900 p-4">
-          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Músicas</h1>
-
+        {/* Conteúdo */}
+        <div className="container ml-20">
+          {/* Músicas */}
           <div>
+            <div className="mt-16 bg-white/10 p-4 shadow-xl shadow-black/50">
+            <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Músicas</h1>
             <MusicList musics={props.musics} />
           </div>
         </div>
       </div>
+
+      {/* Player */}
       <Player />
     </div>
-  );
+  </div>
+);
 };
 
 export default UserPage;
