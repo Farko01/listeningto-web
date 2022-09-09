@@ -1,8 +1,6 @@
-import IMusic from './music.interface';
+import { IMusic } from './music.interface';
 
-interface IMusicList {
+export interface IMusicList {
   musics: IMusic[];
   index: number
 }
-
-export default IMusicList;

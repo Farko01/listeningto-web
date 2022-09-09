@@ -10,7 +10,9 @@ module.exports = {
       },
       fontFamily: {
         barlow: ['Barlow Semi Condensed', 'sans-serif'],
-        fjalla: ['Fjalla One', 'sans-serif']
+        fjalla: ['Fjalla One', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+        merriweather: ['Merriweather', 'serif'],
       }
     },
   },

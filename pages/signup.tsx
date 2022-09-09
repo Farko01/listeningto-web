@@ -10,8 +10,13 @@ import { HiOutlineMail } from 'react-icons/hi';
 import { AiOutlineLock } from 'react-icons/ai';
 import { BsArrowClockwise } from 'react-icons/bs';
 import Link from "next/link";
+import { useUpdateMisc } from "../contexts/MiscContext";
 
 const SignupPage: NextPage = () => {
+  // Deactivating the player
+  const { setPlayer } = useUpdateMisc()!;
+  setPlayer(false);
+
   const cookies = new Cookies();
 
   useEffect(() => {
@@ -31,7 +36,7 @@ const SignupPage: NextPage = () => {
 
     if (password !== cPassword) return setAlert("As senhas são diferentes");
 
-    fetch("/api/user/signup", {
+    fetch("/api/user", {
       method: 'POST',
       body: JSON.stringify({ email, username, password }),
       headers: { "Content-Type": "application/json" },
@@ -41,12 +46,12 @@ const SignupPage: NextPage = () => {
       if (data.message) return setAlert(data.message);
 
       cookies.set("auth", data.auth);
-      Router.push(`user/${data.user._id}`);
+      Router.push(`/user/${data.user._id}`);
     });
   };
 
   return (
-    <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30">
+    <div className="text-black">
       <Head>
         <title>Sign up - Listeningto</title>
       </Head>

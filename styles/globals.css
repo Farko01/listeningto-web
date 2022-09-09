@@ -6,6 +6,19 @@
   box-sizing: border-box;
 }
 
+body {
+  --tw-bg-opacity: 1;
+  --tw-gradient-from: rgb(30 58 138 / 0.6);
+  --tw-gradient-to: rgb(30 58 138 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-text-opacity: 1;
+
+  background-color: rgb(3 3 4 / var(--tw-bg-opacity));
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+  background-attachment: fixed;
+}
+
 .range-input::-webkit-slider-thumb {
   visibility: hidden;
   -webkit-appearance: none;

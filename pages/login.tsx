@@ -8,8 +8,13 @@ import Link from 'next/link';
 
 import { VscAccount } from 'react-icons/vsc';
 import { AiOutlineLock } from 'react-icons/ai';
+import { useUpdateMisc } from "../contexts/MiscContext";
 
 const LoginPage: NextPage = () => {
+  // Deactivating the player
+  const { setPlayer } = useUpdateMisc()!;
+  setPlayer(false);
+  
   const cookies = new Cookies();
 
   // Redirecionamento caso o usuário já esteja logado
@@ -30,7 +35,7 @@ const LoginPage: NextPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    fetch("api/user/login", {
+    fetch("/api/user/login", {
       method: "POST",
       body: JSON.stringify({ email_or_username, password }),
       headers: { "Content-Type": "application/json" },
@@ -44,12 +49,12 @@ const LoginPage: NextPage = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-primary bg-gradient-to-br from-blue-900/30">
+    <div className="text-black">
       <Head>
         <title>Login - Listeningto</title>
       </Head>
 
-      <div className="container m-auto h-screen flex flex-col items-center">
+      <div className="h-screen flex items-center justify-center">
         <div className="border-2 border-white/20 bg-primary rounded p-8 m-auto w-[28%]">
           <div className="flex items-center justify-center my-8">
             <Image src={"http://localhost:3000/favicon.ico"} width={128} height={128} className="mx-auto" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useLayoutEffect } from 'react'
 import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs'
 import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
 import { FiVolume, FiVolume1, FiVolume2, FiVolumeX } from 'react-icons/fi'
@@ -7,10 +7,12 @@ import { IconContext } from 'react-icons'
 import axios from 'axios'
 
 import Image from 'next/image'
+import Link from 'next/link';
 
 import shuffle from '../misc/shuffle';
 import IUser from '../interfaces/user.interface'
 import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
+import { useMisc } from '../contexts/MiscContext'
 
 interface IInfo {
   authors: IUser[];
@@ -27,13 +29,27 @@ enum Repeat {
 
 const Player = () => {
   // Context
-  const { musicList, src, info, isPlaying, duration, currentTime, order, orderIndex, isShuffled, volume, isMuted, repeat, autoPlay } = usePlayer()!;
+  const { audioPlayer, musicList, src, info, isPlaying, duration, currentTime, order, orderIndex, isShuffled, volume, isMuted, repeat, autoPlay } = usePlayer()!;
   const { setMusicList, setSrc, setInfo, setIsPlaying, setDuration, setCurrentTime, setOrder, setOrderIndex, setIsShuffled, setVolume, setIsMuted, setRepeat, setAutoplay } = useUpdatePlayer()!;
+  const { player } = useMisc()!;
 
   // References
-  const audioPlayer = useRef() as React.RefObject<HTMLAudioElement>;  // <audio> reference
   const progressBar = useRef() as React.RefObject<HTMLInputElement>;  // Progress bar reference
   const animationRef = useRef<number>();  // Animation reference
+  const volumeRef = useRef() as React.RefObject<HTMLInputElement>;  // Volume bar reference
+
+  // Activating / deactivating the player
+  useEffect(() => {
+    const playerHTML = document.getElementById("player")!;
+
+    if (player) {
+      playerHTML.classList.remove("hidden")
+    } else {
+      playerHTML.classList.add("hidden");
+      audioPlayer.current!.pause();
+      setIsPlaying(false);
+    }
+  });
 
   // Changing the music that is being played
   useEffect(() => {
@@ -51,17 +67,35 @@ const Player = () => {
     }
   }, [musicList]);
 
+  // Changing the cover, the music name and author shown in the player
+  useEffect(() => {
+    if (!musicList) return;
+    
+    const musicId = musicList.musics[musicList.index]._id;
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`).then((res) => {
+      const musicInfo: IInfo = {
+        authors: musicList.musics[musicList.index].authors,
+        musicName: musicList.musics[musicList.index].name,
+        albumName: res.data ? res.data.name : null,
+        cover: res.data ? res.data.cover : null
+      }
+
+      setInfo(musicInfo);
+    }).catch((e: any) => console.log(e));
+  }, [musicList]);
+
   useEffect(() => {
     if (!src) return;
+    if (!audioPlayer.current) return;
 
     // Loading and playing new src
-    audioPlayer.current!.load();
+    audioPlayer.current.load();
 
     // Not autoplaying if repeat is set to NoRepeat
     if (!autoPlay) {
       setAutoplay(true);
 
-      audioPlayer.current?.pause();
+      audioPlayer.current.pause();
       cancelAnimationFrame(animationRef.current!);
       setIsPlaying(false);
 
@@ -71,38 +105,22 @@ const Player = () => {
     if (!isPlaying) { 
       togglePlayPause();
     } else {
-      audioPlayer.current?.play();
+      audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(updateProgress);
     }
   }, [src]);
 
-  // Changing the cover, the music name and author shown in the player
-  useEffect(() => {
-    if (!musicList) return;
-    
-    const musicId = musicList.musics[musicList.index]._id!;
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`).then((res) => {
-      const musicInfo: IInfo = {
-        authors: musicList.musics[musicList.index].authors!,
-        musicName: musicList.musics[musicList.index].name!,
-        albumName: res.data ? res.data.name : null,
-        cover: res.data ? res.data.cover : null
-      }
-
-      setInfo(musicInfo);
-    }).catch((e: any) => console.log(e));
-  }, [ musicList]);
-
   // Play and pause
   const togglePlayPause = () => {
+    if (!audioPlayer.current) return;
     const prevValue = isPlaying;
 
     if (!prevValue) {
-      audioPlayer.current?.play();
+      audioPlayer.current.play();
       
       animationRef.current = requestAnimationFrame(updateProgress);
     } else {
-      audioPlayer.current?.pause();
+      audioPlayer.current.pause();
       cancelAnimationFrame(animationRef.current!);
     }
 
@@ -124,18 +142,24 @@ const Player = () => {
 
   // Duration
   useEffect(() => {
-    const seconds = Math.floor(audioPlayer.current?.duration!);
+    if (!audioPlayer.current) return;
+
+    const seconds = Math.floor(audioPlayer.current.duration);
     setDuration(seconds);
   }, [audioPlayer?.current?.readyState]);
 
   // Current time
   const changeRange = () => {
-    audioPlayer.current!.currentTime = parseInt(progressBar.current?.value!);
+    if (!audioPlayer.current || !progressBar.current) return;
+
+    audioPlayer.current.currentTime = parseInt(progressBar.current!.value);
     setCurrentTime(parseInt(progressBar.current!.value));
   }
 
   const updateProgress = () => {
-    progressBar.current!.value = audioPlayer.current!.currentTime.toString();
+    if (!audioPlayer.current || !progressBar.current || !animationRef.current) return;
+
+    progressBar.current.value = audioPlayer.current.currentTime.toString();
     setCurrentTime(audioPlayer.current!.currentTime);
 
     animationRef.current = requestAnimationFrame(updateProgress);
@@ -143,8 +167,10 @@ const Player = () => {
 
   // Update the progress bar
   const UpdateProgressBarColor = () => {
+    if (!progressBar.current) return;
+
     const value = currentTime / duration * 100;
-    progressBar.current!.style.background = `linear-gradient(to right, green 0%, green ${value}%, #fff ${value}%, white 100%)`;
+    progressBar.current.style.background = `linear-gradient(to right, #1e3b8a 0%, #1e3b8a ${value}%, #fff ${value}%, white 100%)`;
   }
 
   useEffect(() => {
@@ -213,7 +239,7 @@ const Player = () => {
     setOrderIndex(newIndex);
 
     const prevMusics =  musicList.musics;
-     setMusicList({ musics: prevMusics, index: order[newIndex] });
+    setMusicList({ musics: prevMusics, index: order[newIndex] });
   }
 
   // Manipulate volume
@@ -262,16 +288,12 @@ const Player = () => {
   const MusicInfo = () => {
     if (info) {
       const displayAuthors = () => {
-        let displayNames = "";
-
-        for (let i in info.authors) {
-          if (parseInt(i) != info.authors.length - 1) {
-
-            displayNames += `${info.authors[i].username!}, `;
-          } else displayNames += info.authors[i].username!;
-        }
-
-        return displayNames;
+        return <>
+          { info.authors.map((author, i) => { 
+            if (i != info.authors.length - 1) return <a><Link href={"/user/" + author._id!}>{author.username! + ", "}</Link></a>
+            else return <Link href={"/user/" + author._id!}><a>{author.username!}</a></Link>
+           }) }
+        </>;
       }
 
       return (
@@ -282,10 +304,10 @@ const Player = () => {
             </div>
 
             <div>
-              <p className="text-ellipsis overflow-hidden hover:underline">
+              <p className="text-ellipsis overflow-hidden">
                 {info.musicName}
               </p>
-              <p className="text-ellipsis overflow-hidden hover:underline">
+              <p className="text-ellipsis overflow-hidden">
                 {displayAuthors()}
               </p>
             </div>
@@ -294,14 +316,11 @@ const Player = () => {
       )
     } else return null
   }
-
+  
   return (
-    <div className="absolute bottom-0">
-      <audio ref={audioPlayer} id="audio" onEnded={() => changeMusic() }>
-        <source src={src} />
-      </audio>
+    <div id="player" className="fixed bottom-0 left-0 w-full text-white">
       {/* parte do tailwind do site */}
-      <div className="relative bg-primary bg-gradient-to-b from-blue-900/30 border-top border-t-2 border-white/20 w-screen h-28 flex justify-center items-center p-4">
+      <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-top border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
         {/* Music Info */}
         <MusicInfo />
         
@@ -310,23 +329,23 @@ const Player = () => {
           <IconContext.Provider value={{ size: '30px' }}>
             <div className="flex items-center gap-3 -mb-4">
               {/* Previous */}
-              <button onClick={() => { previousMusic() }} className="hover:text-green-900">
+              <button onClick={() => { previousMusic() }} className="hover:text-blue-900">
                 <BiSkipPrevious />
               </button>
               {/* Shuffle */}
               <button onClick={() => shuffleList() }>
-                <BiShuffle className={ isShuffled ? 'text-green-900' : 'text-white hover:text-green-900' } />
+                <BiShuffle className={ isShuffled ? 'text-blue-900' : 'text-white hover:text-blue-900' } />
               </button>
               {/* Play/Pause */}
-              <button onClick={() => togglePlayPause() } className="hover:text-green-900" >
+              <button onClick={() => togglePlayPause() } className="hover:text-blue-900" >
                 { isPlaying ? <BsPauseFill/> : <BsFillPlayFill /> }
               </button>
               {/* Repeat */}
-              <button onClick={() => changeRepeat() } className="hover:text-green-900">
+              <button onClick={() => changeRepeat() } className="hover:text-blue-900">
                 { repeat == Repeat.NoRepeat ? <TbRepeatOff /> : repeat == Repeat.Repeat ? <TbRepeat /> : <TbRepeatOnce /> }
               </button>
               {/* Next */}
-              <button onClick={() => { nextMusic() }} className="hover:text-green-900">
+              <button onClick={() => { nextMusic() }} className="hover:text-blue-900">
                 <BiSkipNext />
               </button>
             </div>
@@ -359,7 +378,7 @@ const Player = () => {
               </button>
 
               <div className="w-48">
-                <input type="range" value={volume} step={1} max={100} onChange={(e) => handleVolume(e) } className="bg-blue-900 appearance-none range-input h-1 mb-1 w-full rounded outline-none" />
+                <input type="range" value={volume} ref={volumeRef} step={1} max={100} onChange={(e) => handleVolume(e) } className="appearance-none range-input h-1 mb-1 w-full rounded outline-none" />
               </div>
             </div>
           </IconContext.Provider>

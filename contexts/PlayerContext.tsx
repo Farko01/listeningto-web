@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import IMusicList from '../interfaces/musicList.interface';
+import React, { useContext, useState, useRef } from 'react';
+import { IMusicList } from '../interfaces/musicList.interface';
 import IUser from '../interfaces/user.interface';
 
 interface IAppProps {
@@ -20,6 +20,7 @@ enum Repeat {
 }
 
 interface IPlayerContext {
+	audioPlayer: React.RefObject<HTMLAudioElement>;
 	musicList: IMusicList | undefined;
 	src: string | undefined;
 	info: IInfo | null;
@@ -63,23 +64,28 @@ export const useUpdatePlayer = () => {
 }
 
 export const PlayerProvider: React.FC<IAppProps> = ({ children }) => {
-const [musicList, setMusicList] = useState<IMusicList>();
-const [src, setSrc] = useState<string>();
-const [info, setInfo] = useState<IInfo | null>(null);
-const [isPlaying, setIsPlaying] = useState(false);
-const [duration, setDuration] = useState(0);
-const [currentTime, setCurrentTime] = useState(0);
-const [order, setOrder] = useState<number[]>();
-const [orderIndex, setOrderIndex] = useState(0);
-const [isShuffled, setIsShuffled] = useState(false);
-const [volume, setVolume] = useState(100);
-const [isMuted, setIsMuted] = useState(false);
-const [repeat, setRepeat] = useState(Repeat.NoRepeat);
-const [autoPlay, setAutoplay] = useState(true); // This state is only used for not autoplaying when looping the list with the repeat state being set to NoRepeat
+	const [musicList, setMusicList] = useState<IMusicList>();
+	const [src, setSrc] = useState<string>();
+	const [info, setInfo] = useState<IInfo | null>(null);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [duration, setDuration] = useState(0);
+	const [currentTime, setCurrentTime] = useState(0);
+	const [order, setOrder] = useState<number[]>();
+	const [orderIndex, setOrderIndex] = useState(0);
+	const [isShuffled, setIsShuffled] = useState(false);
+	const [volume, setVolume] = useState(100);
+	const [isMuted, setIsMuted] = useState(false);
+	const [repeat, setRepeat] = useState(Repeat.NoRepeat);
+	const [autoPlay, setAutoplay] = useState(true); // This state is only used for not autoplaying when looping the list with the repeat state being set to NoRepeat
+	const audioPlayer = useRef() as React.RefObject<HTMLAudioElement>;
 
 	return (
-		<PlayerContext.Provider value={{ musicList, src, info, isPlaying, duration, currentTime, order, orderIndex, isShuffled, volume, isMuted, repeat, autoPlay }}>
+		<PlayerContext.Provider value={{ audioPlayer, musicList, src, info, isPlaying, duration, currentTime, order, orderIndex, isShuffled, volume, isMuted, repeat, autoPlay }}>
 			<PlayerUpdateContext.Provider value={{ setMusicList, setSrc, setInfo, setIsPlaying, setDuration, setCurrentTime, setOrder, setOrderIndex, setIsShuffled, setVolume, setIsMuted, setRepeat, setAutoplay }}>
+				<audio ref={audioPlayer} id="audio">
+					<source src={src} />
+				</audio>
+
 				{ children }
 			</PlayerUpdateContext.Provider>
 		</PlayerContext.Provider>
