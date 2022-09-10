@@ -110,8 +110,8 @@ const EditPage: NextPage<IAppProps> = (props) => {
 
       <div className="container ml-20 w-4/5 pt-16 pb-20">
         {/* Foto de perfil */}
-        <div>
-          <h1 className="text-2xl font-merriweather">Foto de perfil</h1>
+        <div className="bg-white/10 p-4 shadow-xl shadow-black/50">
+          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Foto de perfil</h1>
           <div className="relative h-64 w-64 mt-4">
             <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
             <label htmlFor="file" className="cursor-pointer">
@@ -129,14 +129,14 @@ const EditPage: NextPage<IAppProps> = (props) => {
         </div>
 
         {/* Nome de usuário */}
-        <div className="mt-4">
-          <h1 className="text-2xl font-merriweather">Nome de usuário</h1>
+        <div className="mt-4 bg-white/10 p-4 shadow-xl shadow-black/50">
+          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Nome de usuário</h1>
           <input type="text" className="bg-transparent text-white block w-auto border border-blue-900 mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setUsername(e.target.value)} />
         </div>
 
         {/* Senha */}
-        <div className="mt-4 [&>*]:py-0.5 [&>*>*]:my-0.5">
-          <h1 className="text-2xl font-merriweather">Senha</h1>
+        <div className="mt-4 bg-white/10 p-4 shadow-xl shadow-black/50 [&>*]:py-0.5 [&>*>*]:my-0.5">
+          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Senha</h1>
           <div className="mt-1">
             <label htmlFor="new_pw text-sm">Senha nova</label>
             <input id="new_pw" type="password" className="bg-transparent text-white block w-auto border border-blue-900 rounded-lg appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
@@ -148,7 +148,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
         </div>
       </div>
 
-      <div className="absolute w-full bottom-10 [&>*]:mx-4">
+      <div className="absolute w-full bottom-4 [&>*]:mx-4">
         <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={() => handleSubmit()}>Salvar alterações</button>
         <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${id}`)}>Cancelar</button>
       </div>

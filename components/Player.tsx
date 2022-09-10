@@ -378,7 +378,7 @@ const Player = () => {
               </button>
 
               <div className="w-48">
-                <input type="range" value={volume} ref={volumeRef} step={1} max={100} onChange={(e) => handleVolume(e) } className="appearance-none range-input h-1 mb-1 w-full rounded outline-none" />
+                <input type="range" value={volume} ref={volumeRef} step={1} max={100} onChange={(e) => handleVolume(e) } className="appearance-none range-input h-1 mb-1 w-full rounded outline-none bg-blue-900" />
               </div>
             </div>
           </IconContext.Provider>

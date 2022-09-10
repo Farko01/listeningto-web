@@ -5,10 +5,10 @@ import { IAlbum } from "../../interfaces/album.interface";
 import Head from "next/head";
 import Image from "next/image";
 import MusicList from '../../components/MusicList';
-import Player from "../../components/Player";
-import { usePlayer, useUpdatePlayer } from "../../contexts/PlayerContext";
 import Link from "next/link";
 import { useUpdateMisc } from "../../contexts/MiscContext";
+import { MdDownloadForOffline } from "react-icons/md";
+import { BsFillPlayCircleFill } from "react-icons/bs";
 
 interface IAppProps {
   music: IMusic;
@@ -35,9 +35,6 @@ const MusicPage: NextPage<IAppProps> = (props) => {
   const { setPlayer } = useUpdateMisc()!;
   setPlayer(true);
   
-  const musicList = usePlayer();
-  const setMusicList = useUpdatePlayer()!;
-  
   const hasAlbum: boolean = props.album ? true : false;
 
   const displayAuthors = () => {
@@ -49,13 +46,22 @@ const MusicPage: NextPage<IAppProps> = (props) => {
     </>;
   }
 
-  const showAlbum = () => {
+  const ShowAlbum = () => {
     if (hasAlbum) {
       return (
-        // <MusicList musics={props.album!.musics!} />
-        <h1>aaa</h1>
+        <MusicList musics={props.album!.musics} showMore={false} />
       )
-    }
+    } else return <h1>Esta música não pertence a nenhum álbum</h1>
+  }
+
+  const handleDownload = () => {
+    fetch("/api" + props.music.file).then((res) => res.blob().then((blob) => {
+      let url = window.URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = `${props.music.name}.${props.music.file.split(".").pop()}`;
+      a.click();
+    }));
   }
 
   return (
@@ -72,6 +78,19 @@ const MusicPage: NextPage<IAppProps> = (props) => {
           <h1 className="text-3xl text-white/100 mb-2">{props.music.name}</h1>
           <h2 className="text-2xl text-white/80">Por {displayAuthors()}</h2>
           <h2 className="text-2xl text-white/80">Álbum: {hasAlbum ? props.album?.name : "Nenhum"}</h2>
+        </div>
+        <div className="absolute bottom-5 right-20">
+          <div className="inline-block [&>*]:mx-2">
+            <MdDownloadForOffline title="Baixar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={48} onClick={() => handleDownload() } />
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="container w-4/5 ml-20">
+          <div className="mt-12 bg-white/10 p-4 shadow-xl shadow-black/50">
+            <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Álbum</h1>
+            { ShowAlbum() }
+          </div>
         </div>
       </div>
     </div>
