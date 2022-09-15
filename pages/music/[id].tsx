@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useUpdateMisc } from "../../contexts/MiscContext";
 import { MdDownloadForOffline } from "react-icons/md";
 import { BsFillPlayCircleFill } from "react-icons/bs";
+import { useUpdatePlayer } from '../../contexts/PlayerContext';
 
 interface IAppProps {
   music: IMusic;
@@ -34,6 +35,8 @@ const MusicPage: NextPage<IAppProps> = (props) => {
   // Activating the player
   const { setPlayer } = useUpdateMisc()!;
   setPlayer(true);
+
+  const { setMusicList } = useUpdatePlayer()!;
   
   const hasAlbum: boolean = props.album ? true : false;
 
@@ -64,8 +67,17 @@ const MusicPage: NextPage<IAppProps> = (props) => {
     }));
   }
 
+  const handlePlay = () => {
+    if (hasAlbum) {
+      const music_index = props.album!.musics.findIndex((el) => el._id == props.music._id);
+      setMusicList({ musics: props.album!.musics, index: music_index });
+    } else {
+      setMusicList({ musics: [props.music], index: 0 });
+    }
+  }
+
   return (
-    <div className="pb-36">
+    <div>
       <Head>
         <title>{`${props.music.name} - ${props.music.authors![0].username} - Listeningto`}</title>
       </Head>
@@ -81,6 +93,7 @@ const MusicPage: NextPage<IAppProps> = (props) => {
         </div>
         <div className="absolute bottom-5 right-20">
           <div className="inline-block [&>*]:mx-2">
+            <BsFillPlayCircleFill title="Tocar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={() => handlePlay() } />
             <MdDownloadForOffline title="Baixar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={48} onClick={() => handleDownload() } />
           </div>
         </div>

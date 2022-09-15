@@ -6,11 +6,10 @@ import Player from '../components/Player'
 import { MiscProvider } from '../contexts/MiscContext'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Document from 'next/document'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className="font-roboto">
+    <div className="font-roboto pl-48">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
@@ -19,7 +18,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" /> 
         <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet" /> 
       </Head>
-
 
       <PlayerProvider>
         <MiscProvider>

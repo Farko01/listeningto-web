@@ -44,8 +44,11 @@ const Player = () => {
 
     if (player) {
       playerHTML.classList.remove("hidden")
+      playerHTML.parentElement?.classList.add("pb-36");
     } else {
       playerHTML.classList.add("hidden");
+      playerHTML.parentElement?.classList.remove("pb-36");
+      
       audioPlayer.current!.pause();
       setIsPlaying(false);
     }
@@ -77,7 +80,7 @@ const Player = () => {
         authors: musicList.musics[musicList.index].authors,
         musicName: musicList.musics[musicList.index].name,
         albumName: res.data ? res.data.name : null,
-        cover: res.data ? res.data.cover : null
+        cover: res.data ? res.data.cover : musicList.musics[musicList.index].cover
       }
 
       setInfo(musicInfo);
@@ -320,7 +323,7 @@ const Player = () => {
   return (
     <div id="player" className="fixed bottom-0 left-0 w-full text-white">
       {/* parte do tailwind do site */}
-      <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-top border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
+      <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
         {/* Music Info */}
         <MusicInfo />
         

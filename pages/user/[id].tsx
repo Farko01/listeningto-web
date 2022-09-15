@@ -115,7 +115,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="pb-36">
+    <div>
       <Head>
         <title>{props.data.username} - Listeningto</title>
       </Head>
