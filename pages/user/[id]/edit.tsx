@@ -61,6 +61,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
   const [profilePic, setProfilePic] = useState<any>(process.env.NEXT_PUBLIC_API_URL + props.data.profilePic);
   const [profilePicFile, setProfilePicFile] = useState<File>();
   const [username, setUsername] = useState<string>();
+  const [email, setEmail] = useState<string>();
 
   const [password, setPassword] = useState<string>();
   const [confirmPassword, setConfirmPassword] = useState<string>();
@@ -85,6 +86,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
     // Criar formdata
     const formdata = new FormData();
     username ? formdata.append("username", username) : null;
+    email ? formdata.append("email", email) : null;
     password ? formdata.append("password", password) : null;
     profilePicFile ? formdata.append("profilePic", profilePicFile) : null;
 
@@ -103,16 +105,17 @@ const EditPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-full w-full relative">
+    <div className="h-screen w-screen flex items-center justify-center">
       <Head>
         <title>Editar Perfil - Listeningto</title>
       </Head>
 
-      <div className="container ml-20 w-4/5 pt-16 pb-20">
-        {/* Foto de perfil */}
-        <div className="bg-white/10 p-4 shadow-xl shadow-black/50">
-          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Foto de perfil</h1>
-          <div className="relative h-64 w-64 mt-4">
+      <div className="w-5/6 h-5/6 bg-white/10 relative">
+        <div className="ml-16 mt-8 w-11/12">
+          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar perfil</h1>
+
+          {/* Foto de perfil */}
+          <div className="relative h-64 w-64 mt-8">
             <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
             <label htmlFor="file" className="cursor-pointer">
               <Image src={profilePic} width={256} height={256} className="rounded-full block" />
@@ -122,35 +125,37 @@ const EditPage: NextPage<IAppProps> = (props) => {
             </label>
           </div>
 
-          <div className="mt-4 [&>*]:p-0.5 text-white/90">
-            <p className="text-base">Clique na imagem para escolher uma nova foto de perfil</p>
-            <p className="text-sm">Tamanho recomendado: 256x256</p>
+          <div className="flex mt-8 border-b-4 border-black/50 pb-8">
+            <div className="basis-1/2">
+              <label htmlFor="username" className="text-lg">Nome de usuário</label>
+              <input id="username" type="text" className="bg-transparent text-white block w-96 border-2 border-primary mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setUsername(e.target.value)} />
+            </div>
+            <div className="basis-1/2">
+              <label htmlFor="email" className="text-lg">Endereço de email</label>
+              <input id="email" type="email" className="bg-transparent text-white block w-96 border-2 border-primary mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setEmail(e.target.value)} />
+            </div>
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-fjalla mt-4">Senha</h1>
+
+            <div className="[&>*]:py-0.5 [&>*>*]:my-0.5 mt-4">
+              <div className="mt-1">
+                <label htmlFor="new_pw text-sm">Senha nova</label>
+                <input id="new_pw" type="password" className="bg-transparent text-white block w-96 border-2 border-primary rounded-lg appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
+              </div>
+              <div className="mt-1">
+                <label htmlFor="c_new_pw text-sm">Confirmar senha nova</label>
+                <input id="c_new_pw" type="password" className="bg-transparent text-white block w-96 border-2 border-primary rounded-lg appearance-none focus:ring-0" onChange={(e) => setConfirmPassword(e.target.value)} />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Nome de usuário */}
-        <div className="mt-4 bg-white/10 p-4 shadow-xl shadow-black/50">
-          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Nome de usuário</h1>
-          <input type="text" className="bg-transparent text-white block w-auto border border-blue-900 mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setUsername(e.target.value)} />
-        </div>
-
-        {/* Senha */}
-        <div className="mt-4 bg-white/10 p-4 shadow-xl shadow-black/50 [&>*]:py-0.5 [&>*>*]:my-0.5">
-          <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Senha</h1>
-          <div className="mt-1">
-            <label htmlFor="new_pw text-sm">Senha nova</label>
-            <input id="new_pw" type="password" className="bg-transparent text-white block w-auto border border-blue-900 rounded-lg appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <div className="mt-1">
-            <label htmlFor="c_new_pw text-sm">Confirmar senha nova</label>
-            <input id="c_new_pw" type="password" className="bg-transparent text-white block w-auto border border-blue-900 rounded-lg appearance-none focus:ring-0" onChange={(e) => setConfirmPassword(e.target.value)} />
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute w-full bottom-4 [&>*]:mx-4">
-        <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={() => handleSubmit()}>Salvar alterações</button>
-        <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${id}`)}>Cancelar</button>
+        <div className="absolute w-full mr-8 pr-16 bottom-8 [&>*]:mx-2">
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={() => handleSubmit()}>Salvar alterações</button>
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${id}`)}>Cancelar</button>
+        </div>   
       </div>
     </div>
   );
