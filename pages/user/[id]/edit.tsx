@@ -105,7 +105,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
+    <div className="m-8 flex items-center justify-center">
       <Head>
         <title>Editar Perfil - Listeningto</title>
       </Head>
@@ -139,7 +139,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
           <div>
             <h1 className="text-2xl font-fjalla mt-4">Senha</h1>
 
-            <div className="[&>*]:py-0.5 [&>*>*]:my-0.5 mt-4">
+            <div className="[&>*]:py-0.5 [&>*>*]:my-0.5 mt-4 mb-8">
               <div className="mt-1">
                 <label htmlFor="new_pw text-sm">Senha nova</label>
                 <input id="new_pw" type="password" className="bg-transparent text-white block w-96 border-2 border-primary rounded-lg appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
@@ -152,7 +152,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
           </div>
         </div>
 
-        <div className="absolute w-full mr-8 pr-16 bottom-8 [&>*]:mx-2">
+        <div className="absolute w-full pr-16 bottom-4 [&>*]:mx-2">
           <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={() => handleSubmit()}>Salvar alterações</button>
           <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${id}`)}>Cancelar</button>
         </div>   

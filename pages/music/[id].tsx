@@ -10,6 +10,7 @@ import { useUpdateMisc } from "../../contexts/MiscContext";
 import { MdDownloadForOffline } from "react-icons/md";
 import { BsFillPlayCircleFill } from "react-icons/bs";
 import { useUpdatePlayer } from '../../contexts/PlayerContext';
+import formatDate from "../../misc/formatDate";
 
 interface IAppProps {
   music: IMusic;
@@ -43,8 +44,8 @@ const MusicPage: NextPage<IAppProps> = (props) => {
   const displayAuthors = () => {
     return <>
       { props.music.authors!.map((author, i) => { 
-        if (i != props.music.authors!.length - 1) return <a><Link href={"/user/" + author._id!}>{author.username! + ", "}</Link></a>
-        else return <Link href={"/user/" + author._id!}><a>{author.username!}</a></Link>
+        if (i != props.music.authors!.length - 1) return <a className="hover:underline cursor-pointer"><Link href={"/user/" + author._id!}>{author.username! + ", "}</Link></a>
+        else return <Link href={"/user/" + author._id!}><a className="hover:underline cursor-pointer">{author.username!}</a></Link>
        }) }
     </>;
   }
@@ -86,10 +87,15 @@ const MusicPage: NextPage<IAppProps> = (props) => {
         <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
           <Image src={`${process.env.NEXT_PUBLIC_API_URL}${hasAlbum ? props.album!.cover! : props.music!.cover!}`} width={256} height={256} />
         </div>
-        <div className="mt-32 ml-12 antialiased">
-          <h1 className="text-3xl text-white/100 mb-2">{props.music.name}</h1>
-          <h2 className="text-2xl text-white/80">Por {displayAuthors()}</h2>
-          <h2 className="text-2xl text-white/80">Álbum: {hasAlbum ? props.album?.name : "Nenhum"}</h2>
+        <div className="mt-32 ml-12 flex flex-col">
+          <div className="basis-2/3">
+            <h1 className="text-3xl text-white/100 mb-2">{props.music.name}</h1>
+            <h2 className="text-2xl text-white/80">Por {displayAuthors()}</h2>
+            <h2 className="text-2xl text-white/80">Álbum: {hasAlbum ? <Link href={"/album/" + props.album!._id}><a className="hover:underline cursor-pointer">{props.album!.name}</a></Link> : "Nenhum"}</h2>
+          </div>
+          <div className="basis-1/3">
+            <h3 className="text-lg text-white/90">Criado em {formatDate(props.music.createdAt)}</h3>
+          </div>
         </div>
         <div className="absolute bottom-5 right-20">
           <div className="inline-block [&>*]:mx-2">
