@@ -33,9 +33,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const MusicPage: NextPage<IAppProps> = (props) => {
-  // Activating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Activating the player and navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(true);
+  setNavbar(true);
 
   const { setMusicList } = useUpdatePlayer()!;
   

@@ -74,9 +74,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
-  // Activating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Activating the player and navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(true);
+  setNavbar(true);
 
   const UpdateInfo = () => {
     if (props.authorized) {

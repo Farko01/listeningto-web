@@ -1,6 +1,4 @@
 import React, { useContext, useState, useRef } from 'react';
-import { IMusicList } from '../interfaces/musicList.interface';
-import IUser from '../interfaces/user.interface';
 
 interface IAppProps {
 	children: any;
@@ -8,10 +6,12 @@ interface IAppProps {
 
 interface IMiscContext {
   player: Boolean;
+  navbar: Boolean;
 }
 
 interface IMiscUpdateContext {
   setPlayer: React.Dispatch<React.SetStateAction<boolean>>;
+  setNavbar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MiscContext = React.createContext<IMiscContext | undefined>(undefined);
@@ -27,10 +27,11 @@ export const useUpdateMisc = () => {
 
 export const MiscProvider: React.FC<IAppProps> = ({ children }) => {
   const [player, setPlayer] = useState(false);
+  const [navbar, setNavbar] = useState(false);
 
 	return (
-		<MiscContext.Provider value={{ player }}>
-			<MiscUpdateContext.Provider value={{ setPlayer }}>
+		<MiscContext.Provider value={{ player, navbar }}>
+			<MiscUpdateContext.Provider value={{ setPlayer, setNavbar }}>
 				{ children }
 			</MiscUpdateContext.Provider>
 		</MiscContext.Provider>

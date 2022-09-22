@@ -47,9 +47,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const EditPage: NextPage<IAppProps> = (props) => {
-  // Deactivating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Deactivating the player and activating the navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(false);
+  setNavbar(true);
   
   const router = useRouter();
   const { id } = router.query;
@@ -105,13 +106,13 @@ const EditPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="m-8 flex items-center justify-center">
+    <div className="m-24 flex items-center justify-center">
       <Head>
         <title>Editar Perfil - Listeningto</title>
       </Head>
 
       <div className="w-5/6 h-5/6 bg-white/10 relative">
-        <div className="ml-16 mt-8 w-11/12">
+        <div className="ml-16 mt-16 w-11/12">
           <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar perfil</h1>
 
           {/* Foto de perfil */}
@@ -128,11 +129,11 @@ const EditPage: NextPage<IAppProps> = (props) => {
           <div className="flex mt-8 border-b-4 border-black/50 pb-8">
             <div className="basis-1/2">
               <label htmlFor="username" className="text-lg">Nome de usuário</label>
-              <input id="username" type="text" className="bg-transparent text-white block w-96 border-2 border-primary mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setUsername(e.target.value)} />
+              <input id="username" type="text" className="bg-transparent text-white block w-96 outline-0 border-0 border-b-2 mt-0.5 appearance-none focus:ring-0" onChange={(e) => setUsername(e.target.value)} />
             </div>
             <div className="basis-1/2">
               <label htmlFor="email" className="text-lg">Endereço de email</label>
-              <input id="email" type="email" className="bg-transparent text-white block w-96 border-2 border-primary mt-0.5 rounded-lg appearance-none focus:ring-0" onChange={(e) => setEmail(e.target.value)} />
+              <input id="email" type="email" className="bg-transparent text-white block w-96 outline-0 border-0 border-b-2 mt-0.5 appearance-none focus:ring-0" onChange={(e) => setEmail(e.target.value)} />
             </div>
           </div>
 
@@ -142,11 +143,11 @@ const EditPage: NextPage<IAppProps> = (props) => {
             <div className="[&>*]:py-0.5 [&>*>*]:my-0.5 mt-4 mb-8">
               <div className="mt-1">
                 <label htmlFor="new_pw text-sm">Senha nova</label>
-                <input id="new_pw" type="password" className="bg-transparent text-white block w-96 border-2 border-primary rounded-lg appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
+                <input id="new_pw" type="password" className="bg-transparent text-white block w-96 outline-0 border-0 border-b-2 appearance-none focus:ring-0" onChange={(e) => setPassword(e.target.value)} />
               </div>
               <div className="mt-1">
                 <label htmlFor="c_new_pw text-sm">Confirmar senha nova</label>
-                <input id="c_new_pw" type="password" className="bg-transparent text-white block w-96 border-2 border-primary rounded-lg appearance-none focus:ring-0" onChange={(e) => setConfirmPassword(e.target.value)} />
+                <input id="c_new_pw" type="password" className="bg-transparent text-white block w-96 outline-0 border-0 border-b-2 appearance-none focus:ring-0" onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
             </div>
           </div>

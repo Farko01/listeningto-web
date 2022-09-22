@@ -322,7 +322,6 @@ const Player = () => {
   
   return (
     <div id="player" className="fixed bottom-0 left-0 w-full text-white">
-      {/* parte do tailwind do site */}
       <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
         {/* Music Info */}
         <MusicInfo />
@@ -372,7 +371,7 @@ const Player = () => {
         </div>
 
         {/* Volume */}
-        <div className="sm:flex md:shrink-0">
+        <div className='absolute right-4'>
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
               <button onClick={() => handleMuted() }>
@@ -380,7 +379,7 @@ const Player = () => {
                 { isMuted ? <FiVolumeX /> : volume > 50 ? <FiVolume2 /> : volume > 0 ? <FiVolume1 /> : <FiVolume /> }
               </button>
 
-              <div className="w-48">
+              <div className="w-36">
                 <input type="range" value={volume} ref={volumeRef} step={1} max={100} onChange={(e) => handleVolume(e) } className="appearance-none range-input h-1 mb-1 w-full rounded outline-none bg-blue-900" />
               </div>
             </div>
