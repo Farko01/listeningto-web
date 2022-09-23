@@ -8,7 +8,7 @@ import Cookies from 'universal-cookie'
 import IUser from '../interfaces/user.interface'
 
 const Navbar = () => {
-  // Activating / deactivating the player
+  // Activating / deactivating the navbar
 	const { navbar } = useMisc()!;
 
   useEffect(() => {
