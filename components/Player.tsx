@@ -84,7 +84,7 @@ const Player = () => {
       }
 
       setInfo(musicInfo);
-    }).catch((e: any) => console.log(e));
+    })
   }, [musicList]);
 
   useEffect(() => {
