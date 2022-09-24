@@ -11,9 +11,11 @@ import { AiOutlineLock } from 'react-icons/ai';
 import { useUpdateMisc } from "../contexts/MiscContext";
 
 const LoginPage: NextPage = () => {
-  // Deactivating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Deactivating the player and navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(false);
+  setNavbar(false);
+
   
   const cookies = new Cookies();
 

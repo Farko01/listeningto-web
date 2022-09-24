@@ -74,9 +74,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 };
 
 const UserPage: NextPage<IAppProps> = (props) => {
-  // Activating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Activating the player and navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(true);
+  setNavbar(true);
 
   const UpdateInfo = () => {
     if (props.authorized) {
@@ -115,7 +116,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
   }
 
   return (
-    <div className="pb-36">
+    <div>
       <Head>
         <title>{props.data.username} - Listeningto</title>
       </Head>

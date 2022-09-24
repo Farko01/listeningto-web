@@ -23,7 +23,6 @@ const MusicList = (props: IAppProps) => {
   }
 
   useEffect(() => {
-    console.log(showMore);
     const elements = document.querySelectorAll(".showMoreClass");
     elements.forEach((el) => {
       showMore ? el.classList.remove("hidden") : el.classList.add("hidden");

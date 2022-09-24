@@ -13,9 +13,10 @@ import Link from "next/link";
 import { useUpdateMisc } from "../contexts/MiscContext";
 
 const SignupPage: NextPage = () => {
-  // Deactivating the player
-  const { setPlayer } = useUpdateMisc()!;
+  // Deactivating the player and navbar
+  const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(false);
+  setNavbar(false);
 
   const cookies = new Cookies();
 

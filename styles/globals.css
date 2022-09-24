@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   --tw-bg-opacity: 1;
   --tw-gradient-from: rgb(30 58 138 / 0.6);
