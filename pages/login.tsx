@@ -5,6 +5,7 @@ import Router from "next/router";
 import Cookies from "universal-cookie";
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 import { VscAccount } from 'react-icons/vsc';
 import { AiOutlineLock } from 'react-icons/ai';
@@ -30,9 +31,6 @@ const LoginPage: NextPage = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  // State de error message
-  const [alert, setAlert] = useState("");
-
   // Função que cuida da data do formulário
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -43,9 +41,9 @@ const LoginPage: NextPage = () => {
       headers: { "Content-Type": "application/json" },
     }).then((res) => res.json())
     .then((data) => {
-      if (data.message) return setAlert(data.message);
+      if (data.message) return toast.error(data.message);
 
-      cookies.set("auth", data.auth, { expires: rememberMe ? new Date(Date.now() + 315360000000) : undefined });
+      cookies.set("auth", data.auth, { expires: rememberMe ? new Date(Date.now() + 315360000000) : undefined, path: "/", sameSite: "none" });
       Router.push(`user/${data.user._id}`)
     });
   };
@@ -115,7 +113,6 @@ const LoginPage: NextPage = () => {
             </div>
           </form>
           <h2 className="text-white/80 text-center mt-2">Novo aqui? <Link href="/signup"><a className="text-blue-900/60 hover:text-blue-900/80">Crie uma conta!</a></Link></h2>
-          <h2 id="alert" className="text-red-800 text-center mt-2">{alert}</h2>
         </div>
       </div>
     </div>

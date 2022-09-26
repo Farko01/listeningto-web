@@ -11,6 +11,7 @@ import { AiOutlineLock } from 'react-icons/ai';
 import { BsArrowClockwise } from 'react-icons/bs';
 import Link from "next/link";
 import { useUpdateMisc } from "../contexts/MiscContext";
+import { toast } from "react-toastify";
 
 const SignupPage: NextPage = () => {
   // Deactivating the player and navbar
@@ -44,9 +45,9 @@ const SignupPage: NextPage = () => {
     })
     .then((res) => res.json())
     .then((data) => {
-      if (data.message) return setAlert(data.message);
+      if (data.message) return toast.error(data.message);
 
-      cookies.set("auth", data.auth);
+      cookies.set("auth", data.auth, { expires: new Date(Date.now() + 315360000000), path: "/", sameSite: "none" });
       Router.push(`/user/${data.user._id}`);
     });
   };
@@ -138,7 +139,6 @@ const SignupPage: NextPage = () => {
             </div>
           </form>
           <h2 className="text-white/80 text-center mt-2">Já possui uma conta? <Link href="/login"><a className="text-blue-900/60 hover:text-blue-900/80">Entre!</a></Link></h2>
-          <h2 id="alert" className="text-red-800 text-center mt-2">{alert}</h2>
         </div>
       </div>
     </div>

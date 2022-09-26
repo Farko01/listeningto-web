@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#030304"
+        primary: "#030304",
+        box: "#2C354D"
       },
       fontFamily: {
         barlow: ['Barlow Semi Condensed', 'sans-serif'],

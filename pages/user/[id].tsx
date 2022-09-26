@@ -31,19 +31,12 @@ interface IAppProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
-  let parsedCookies: any;
-
   // Este valor determina se o usuário acessando a página é aquele a quem a página se refere, dando permissão para
   // atualizar informações a partir dela
   let authorized: boolean = false;
-
-  if (req.headers.cookie) {
-    parsedCookies = cookie.parse(req.headers.cookie);
-
-    if (parsedCookies.auth) {
-      const decoded = verify(parsedCookies.auth,process.env.JWT_SECRET!) as IAuthToken;
-      if (decoded.id == params!.id) authorized = true;
-    }
+  if (req.cookies.auth) {
+    const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
+    if (decoded.id == params!.id) authorized = true;
   }
 
   // Request de data do usuário
@@ -60,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 
   // Request de playlists
   const playlists_url = `${process.env.NEXT_PUBLIC_API_URL}/user/${params!.id}/playlists`;
-  const playlists = await axios.get(playlists_url, authorized ? { headers: { Authorization: `Bearer ${parsedCookies!.auth}` } } : undefined);
+  const playlists = await axios.get(playlists_url, authorized ? { headers: { Authorization: `Bearer ${req.cookies.auth}` } } : undefined);
 
   return {
     props: {
@@ -78,18 +71,6 @@ const UserPage: NextPage<IAppProps> = (props) => {
   const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(true);
   setNavbar(true);
-
-  const UpdateInfo = () => {
-    if (props.authorized) {
-      return (
-        <button className="h-12 w-28 text-white font-semibold border border-blue-900 rounded-xl">
-          <Link href={"/user/" + props.data._id + "/edit"}>
-            Editar Perfil
-          </Link>
-        </button>
-      )
-    } else return null
-  }
 
   const ShowAlbums = () => {
     if (props.albums.length > 0) {
@@ -130,7 +111,15 @@ const UserPage: NextPage<IAppProps> = (props) => {
           <h1 className="text-5xl antialiased mt-48 ml-16">{props.data.username}</h1>
 
           <div className="absolute bottom-10 right-40">
-            <UpdateInfo />
+            {
+              props.authorized ?
+              <button className="h-12 w-28 text-white font-semibold border border-blue-900 rounded-xl">
+                <Link href={"/user/" + props.data._id + "/edit"}>
+                  Editar Perfil
+                </Link>
+              </button>
+              : null
+            }
           </div>
         </div>
 
@@ -138,7 +127,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
         <div className="container w-4/5 ml-20">
           {/* Músicas */}
           <div>
-            <div className="mt-16 bg-white/10 p-4 shadow-xl shadow-black/50">
+            <div className="mt-16 bg-box p-4 shadow-xl shadow-black/50">
               <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Músicas</h1>
               { props.musics.length > 0 ? <MusicList musics={props.musics} showMore={true} /> : <h2>Este usuário não possui nenhuma música</h2> }
             </div>
@@ -146,7 +135,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
 
           {/* Álbuns */}
           <div>
-            <div className="mt-12 bg-white/10 p-4 shadow-xl shadow-black/50">
+            <div className="mt-12 bg-box p-4 shadow-xl shadow-black/50">
               <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Álbuns</h1>
               { ShowAlbums() }
             </div>
@@ -154,7 +143,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
 
           {/* Playlists */}
           <div>
-            <div className="mt-12 bg-white/10 p-4 shadow-xl shadow-black/50">
+            <div className="mt-12 bg-box p-4 shadow-xl shadow-black/50">
               <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Playlists</h1>
               { ShowPlaylists() }
             </div>

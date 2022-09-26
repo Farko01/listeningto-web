@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useLayoutEffect } from 'react'
+import React, { useEffect, useRef, useLayoutEffect, useState } from 'react'
 import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs'
 import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
 import { FiVolume, FiVolume1, FiVolume2, FiVolumeX } from 'react-icons/fi'
 import { TbRepeat, TbRepeatOff, TbRepeatOnce } from 'react-icons/tb'
 import { IconContext } from 'react-icons'
 import axios from 'axios'
-
 import Image from 'next/image'
 import Link from 'next/link';
-
 import shuffle from '../misc/shuffle';
 import IUser from '../interfaces/user.interface'
 import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
 import { useMisc } from '../contexts/MiscContext'
+import { IoLibraryOutline } from 'react-icons/io5';
 
 interface IInfo {
   authors: IUser[];
@@ -319,6 +318,8 @@ const Player = () => {
       )
     } else return null
   }
+
+  const [showModal, setShowModal] = useState<Boolean>(false);
   
   return (
     <div id="player" className="fixed bottom-0 left-0 w-full text-white">
@@ -374,6 +375,8 @@ const Player = () => {
         <div className='absolute right-4'>
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
+              <IoLibraryOutline title={"Lista de Reprodução"} onClick={() => { const prevVal = showModal; setShowModal(!prevVal) }} />
+
               <button onClick={() => handleMuted() }>
                 {/* I can't just use a local component to render the icons since it will not work, so yeah it's a mess */}
                 { isMuted ? <FiVolumeX /> : volume > 50 ? <FiVolume2 /> : volume > 0 ? <FiVolume1 /> : <FiVolume /> }

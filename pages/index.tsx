@@ -5,8 +5,12 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Listeningto</title>
+        <title>Home - Listeningto</title>
       </Head>
+
+      <div>
+        
+      </div>
     </>
   );
 };
