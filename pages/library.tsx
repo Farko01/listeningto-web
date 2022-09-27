@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Home - Listeningto</title>
+        <title>Biblioteca - Listeningto</title>
       </Head>
 
       <div>

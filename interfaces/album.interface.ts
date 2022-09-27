@@ -7,6 +7,7 @@ export interface IAlbum {
   name: string;
   musics: IMusic[];
   cover: string;
+  tags: string[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }

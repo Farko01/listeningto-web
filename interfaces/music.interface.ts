@@ -6,7 +6,9 @@ export interface IMusic {
   name: string;
   file: string;
   cover: string;
-  timesPlayed: number;
+  duration: number;
+  views: number;
+  tags: string[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }

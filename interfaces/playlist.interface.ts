@@ -8,6 +8,7 @@ export interface IPlaylist {
   musics: IMusic[] | null;
   cover: string;
   private: boolean;
+  tags: string[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
