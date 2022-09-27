@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import formatTime from '../misc/formatTime'
 import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs'
 import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
 import { FiVolume, FiVolume1, FiVolume2, FiVolumeX } from 'react-icons/fi'
@@ -11,7 +12,7 @@ import shuffle from '../misc/shuffle';
 import IUser from '../interfaces/user.interface'
 import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
 import { useMisc } from '../contexts/MiscContext'
-import { IoLibraryOutline } from 'react-icons/io5';
+import { IoLibraryOutline } from 'react-icons/io5'
 
 interface IInfo {
   authors: IUser[];
@@ -127,19 +128,6 @@ const Player = () => {
     }
 
     setIsPlaying(!prevValue);
-  }
-
-  // Formating time
-  const formatTime = (seconds: number) => {
-    if (!seconds || seconds == 0) return `00:00`
-
-    const minutes = Math.floor(seconds / 60);
-    const returnedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
-
-    const remainingSeconds = Math.floor(seconds % 60);
-    const returnedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds.toString();
-
-    return `${returnedMinutes}:${returnedSeconds}`;
   }
 
   // Duration
@@ -375,7 +363,9 @@ const Player = () => {
         <div className='absolute right-4'>
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
-              <IoLibraryOutline title={"Lista de Reprodução"} onClick={() => { const prevVal = showModal; setShowModal(!prevVal) }} />
+              <Link href={"/queue"}>
+                <IoLibraryOutline title={"Lista de Reprodução"} className="cursor-pointer" />
+              </Link>
 
               <button onClick={() => handleMuted() }>
                 {/* I can't just use a local component to render the icons since it will not work, so yeah it's a mess */}

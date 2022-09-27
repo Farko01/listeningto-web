@@ -3,6 +3,7 @@ import { IMusic } from '../interfaces/music.interface';
 import Link from 'next/link';
 import { useUpdatePlayer } from '../contexts/PlayerContext';
 import { BsFillPlayFill } from 'react-icons/bs'
+import formatTime from '../misc/formatTime';
 
 interface IAppProps {
   musics: IMusic[];
@@ -22,6 +23,7 @@ const MusicList = (props: IAppProps) => {
     setShowMore(!prevValue);
   }
 
+
   useEffect(() => {
     const elements = document.querySelectorAll(".showMoreClass");
     elements.forEach((el) => {
@@ -34,41 +36,56 @@ const MusicList = (props: IAppProps) => {
       { props.musics.map((music, i) => {
         if (props.showMore) {
           if (i < 10) {
-            return <div key={i} className="hover:bg-white/20 font-barlow p-0.5">
+            return <div key={i} className="hover:bg-white/20 font-barlow p-0.5 flex">
             {/* Numeração e play */}
             <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
 
             {/* Nome e link da música */}
+            <div className='basis-4/5'>
+                <Link href={"/music/" + music._id!}>
+                  <a className="cursor-pointer hover:underline inline-block">
+                    { music.name }
+                  </a>
+                </Link>
+              </div>
+              <div className='basis-1/5'>
+                <span>{ formatTime(music.duration) }</span>
+              </div>
+          </div>
+          } else {
+            // Mesma coisa do de acima, mas por padrão tem display: none
+            return <div key={i} className="hover:bg-white/20 font-barlow p-0.5 showMoreClass flex">
+              {/* Numeração e play */}
+              <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
+
+              {/* Nome e link da música */}
+              <div className='basis-4/5'>
+                <Link href={"/music/" + music._id!}>
+                  <a className="cursor-pointer hover:underline inline-block">
+                    { music.name }
+                  </a>
+                </Link>
+              </div>
+              <div className='basis-1/5'>
+                <span>{ formatTime(music.duration) }</span>
+              </div>
+            </div>
+          }
+        } else return <div key={i} className="hover:bg-white/20 font-barlow p-0.5 flex">
+          {/* Numeração e play */}
+          <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
+
+          {/* Nome e link da música */}
+          <div className='basis-4/5'>
             <Link href={"/music/" + music._id!}>
               <a className="cursor-pointer hover:underline inline-block">
                 { music.name }
               </a>
             </Link>
           </div>
-          } else {
-            // Mesma coisa do de acima, mas por padrão tem display: none
-            return <div key={i} className="hover:bg-white/20 font-barlow p-0.5 showMoreClass">
-              {/* Numeração e play */}
-              <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
-
-              {/* Nome e link da música */}
-              <Link href={"/music/" + music._id!}>
-                <a className="cursor-pointer hover:underline inline-block">
-                  { music.name }
-                </a>
-              </Link>
-            </div>
-          }
-        } else return <div key={i} className="hover:bg-white/20 font-barlow p-0.5">
-          {/* Numeração e play */}
-          <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
-
-          {/* Nome e link da música */}
-          <Link href={"/music/" + music._id!}>
-            <a className="cursor-pointer hover:underline inline-block">
-              { music.name }
-            </a>
-          </Link>
+          <div className='basis-1/5'>
+            <span>{ formatTime(music.duration) }</span>
+          </div>
         </div>
       }) }
 

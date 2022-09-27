@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useUpdateMisc } from "../contexts/MiscContext";
 
-const Home: NextPage = () => {
+const Home: NextPage = (props) => {
   // Activating the player and navbar
   const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(true);
@@ -11,11 +11,11 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Home - Listeningto</title>
+        <title>Lista de Reprodução - Listeningto</title>
       </Head>
 
       <div>
-        
+
       </div>
     </>
   );
