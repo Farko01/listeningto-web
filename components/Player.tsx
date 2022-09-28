@@ -13,12 +13,14 @@ import IUser from '../interfaces/user.interface'
 import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
 import { useMisc } from '../contexts/MiscContext'
 import { IoLibraryOutline } from 'react-icons/io5'
+import { useRouter } from 'next/router'
+import { IAlbum } from '../interfaces/album.interface'
+import { IMusic } from '../interfaces/music.interface'
 
 interface IInfo {
-  authors: IUser[];
-  musicName: string;
-  albumName: string | null;
   cover: string;
+  music: IMusic;
+  album: IAlbum;
 }
 
 enum Repeat {
@@ -77,10 +79,9 @@ const Player = () => {
     const musicId = musicList.musics[musicList.index]._id;
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/music/${musicId}/album`).then((res) => {
       const musicInfo: IInfo = {
-        authors: musicList.musics[musicList.index].authors,
-        musicName: musicList.musics[musicList.index].name,
-        albumName: res.data ? res.data.name : null,
-        cover: res.data ? res.data.cover : musicList.musics[musicList.index].cover
+        cover: res.data ? res.data.cover : musicList.musics[musicList.index].cover,
+        music: musicList.musics[musicList.index],
+        album: res.data
       }
 
       setInfo(musicInfo);
@@ -176,16 +177,16 @@ const Player = () => {
 
     if (!prevValue) {
       // Shuffles the list
-      const randomOrder = shuffle([... Array( musicList.musics.length).keys()]);
+      const randomOrder = shuffle([... Array(musicList.musics.length).keys()]);
       setOrder(randomOrder);
 
-      setOrderIndex(randomOrder.indexOf( musicList.index));
+      setOrderIndex(randomOrder.indexOf(musicList.index));
     } else {
       // Unshuffles the list
-      const normalOrder = [... Array( musicList.musics.length).keys()];
+      const normalOrder = [... Array(musicList.musics.length).keys()];
 
       setOrder(normalOrder);
-      setOrderIndex(normalOrder.indexOf( musicList.index));
+      setOrderIndex(normalOrder.indexOf(musicList.index));
     }
   }
 
@@ -212,11 +213,25 @@ const Player = () => {
     setMusicList({ musics: prevMusics, index: order[newIndex] });
   }
 
+  useEffect(() => {
+    if (Math.trunc(currentTime) == duration) changeMusic();
+  }, [currentTime]);
+
   // Skip to the next music
   const nextMusic = () => {
-    if (repeat == Repeat.RepeatOne) setRepeat(Repeat.Repeat);
+    // The state changes after changeMusic() is executed, so to stop
+    // the music from playing again even when skipping
+    // I needed to copy the code from the changeMusic() function
+    if (repeat == Repeat.RepeatOne) {
+      setRepeat(Repeat.Repeat);
 
-    changeMusic();
+      const prevIndex = orderIndex;
+      const newIndex = prevIndex ==  musicList!.musics.length - 1 ? 0 : prevIndex + 1;
+      setOrderIndex(newIndex);
+
+      const prevMusics =  musicList!.musics;
+      setMusicList({ musics: prevMusics, index: order![newIndex] });
+    } else changeMusic();
   }
 
   // Go to the previous music
@@ -274,13 +289,20 @@ const Player = () => {
     }
   }
 
+  const router = useRouter();
+  const queueRedirect = () => {
+    console.log(router.asPath);
+    if (router.asPath !== '/queue') router.push('/queue');
+    else router.back();
+  }
+
   // Music info
   const MusicInfo = () => {
     if (info) {
       const displayAuthors = () => {
         return <>
-          { info.authors.map((author, i) => { 
-            if (i != info.authors.length - 1) return <a><Link href={"/user/" + author._id!}>{author.username! + ", "}</Link></a>
+          { info.music.authors.map((author, i) => { 
+            if (i != info.music.authors.length - 1) return <a><Link href={"/user/" + author._id!}>{author.username! + ", "}</Link></a>
             else return <Link href={"/user/" + author._id!}><a>{author.username!}</a></Link>
            }) }
         </>;
@@ -295,7 +317,7 @@ const Player = () => {
 
             <div>
               <p className="text-ellipsis overflow-hidden">
-                {info.musicName}
+                {info.music.name}
               </p>
               <p className="text-ellipsis overflow-hidden">
                 {displayAuthors()}
@@ -306,8 +328,6 @@ const Player = () => {
       )
     } else return null
   }
-
-  const [showModal, setShowModal] = useState<Boolean>(false);
   
   return (
     <div id="player" className="fixed bottom-0 left-0 w-full text-white">
@@ -363,9 +383,7 @@ const Player = () => {
         <div className='absolute right-4'>
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
-              <Link href={"/queue"}>
-                <IoLibraryOutline title={"Lista de Reprodução"} className="cursor-pointer" />
-              </Link>
+              <IoLibraryOutline title={"Lista de Reprodução"} className="cursor-pointer" onClick={() => { queueRedirect() }} />
 
               <button onClick={() => handleMuted() }>
                 {/* I can't just use a local component to render the icons since it will not work, so yeah it's a mess */}

@@ -37,7 +37,7 @@ const MusicList = (props: IAppProps) => {
         if (props.showMore) {
           if (i < 10) {
             return <div key={i} className="hover:bg-white/20 font-barlow p-0.5 flex">
-            {/* Numeração e play */}
+            {/* Play */}
             <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer inline-block mr-2" onClick={() => playMusicList(i)} />
 
             {/* Nome e link da música */}

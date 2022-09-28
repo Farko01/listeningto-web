@@ -55,6 +55,7 @@ const Navbar = () => {
   const logOff = async () => {
     const cookies = new Cookies();
     cookies.remove("auth", { path: "/" });
+    setUserData(undefined);
     Router.reload();
   }
 
@@ -86,7 +87,7 @@ const Navbar = () => {
                 <div className='h-[73px] flex justify-center items-center border-b-2 border-white/20'>
                   <h1 className='text-xl font-semibold text-center mt-3'>{userData.username}</h1>
                 </div>
-                <Link href={`/user/${userData._id}`} shallow={false}>
+                <Link href={`/user/${userData._id}`}>
                   <div className='flex items-center m-2 w-[90%] hover:bg-white/20 p-2 cursor-pointer'>
                     <VscAccount size={36} />
                     <a className='text-xl font-semibold ml-2'>Perfil</a>

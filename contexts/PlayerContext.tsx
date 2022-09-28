@@ -1,4 +1,6 @@
 import React, { useContext, useState, useRef } from 'react';
+import { IAlbum } from '../interfaces/album.interface';
+import { IMusic } from '../interfaces/music.interface';
 import { IMusicList } from '../interfaces/musicList.interface';
 import IUser from '../interfaces/user.interface';
 
@@ -7,10 +9,9 @@ interface IAppProps {
 }
 
 interface IInfo {
-  authors: IUser[];
-  musicName: string;
-  albumName: string | null;
   cover: string;
+	album: IAlbum;
+  music: IMusic;
 }
 
 enum Repeat {
