@@ -111,7 +111,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
         <title>Editar Perfil - Listeningto</title>
       </Head>
 
-      <div className="w-5/6 h-5/6 bg-white/10 relative">
+      <div className="w-5/6 h-5/6 bg-box shadow-xl shadow-black/50 relative">
         <div className="ml-16 mt-16 w-11/12">
           <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar perfil</h1>
 

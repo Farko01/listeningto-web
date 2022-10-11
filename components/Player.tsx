@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import formatTime from '../misc/formatTime'
 import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs'
 import { BiShuffle, BiSkipPrevious, BiSkipNext } from 'react-icons/bi'
@@ -9,7 +9,6 @@ import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link';
 import shuffle from '../misc/shuffle';
-import IUser from '../interfaces/user.interface'
 import { usePlayer, useUpdatePlayer } from '../contexts/PlayerContext'
 import { useMisc } from '../contexts/MiscContext'
 import { IoLibraryOutline } from 'react-icons/io5'
@@ -291,7 +290,6 @@ const Player = () => {
 
   const router = useRouter();
   const queueRedirect = () => {
-    console.log(router.asPath);
     if (router.asPath !== '/queue') router.push('/queue');
     else router.back();
   }

@@ -11,6 +11,7 @@ import Router from 'next/router'
 import Link from 'next/link'
 import { VscAccount } from 'react-icons/vsc'
 import { ImExit } from 'react-icons/im'
+import { HiOutlinePlus } from 'react-icons/hi'
 
 interface IAuthToken {
   id: string;
@@ -88,12 +89,18 @@ const Navbar = () => {
                   <h1 className='text-xl font-semibold text-center mt-3'>{userData.username}</h1>
                 </div>
                 <Link href={`/user/${userData._id}`}>
-                  <div className='flex items-center m-2 w-[90%] hover:bg-white/20 p-2 cursor-pointer'>
+                  <div className='flex items-center w-[95%] p-2 m-2 hover:bg-white/20 cursor-pointer'>
                     <VscAccount size={36} />
                     <a className='text-xl font-semibold ml-2'>Perfil</a>
                   </div>
                 </Link>
-                <div className='absolute bottom-0 flex items-center m-2 w-[90%] hover:bg-white/20 p-2 cursor-pointer' onClick={() => logOff() }>
+                <Link href={`/new`}>
+                  <div className='flex items-center w-[95%] p-2 m-2 hover:bg-white/20 cursor-pointer'>
+                    <HiOutlinePlus size={36} />
+                    <a className='text-xl font-semibold ml-2'>Novo</a>
+                  </div>
+                </Link>
+                <div className='absolute bottom-0 flex items-center m-2 w-[95%] mr-8 hover:bg-white/20 p-2 cursor-pointer' onClick={() => logOff() }>
                   <ImExit size={36} />
                   <h1 className='text-xl font-semibold ml-2'>Sair</h1>
                 </div>
@@ -101,7 +108,7 @@ const Navbar = () => {
             </div>
             : 
             <Link href={"/login"}>
-              <button className="border-2 border-blue-900 py-2 px-6 bg-gray-900 hover:bg-gray-700">
+              <button className="border-2 border-blue-900 rounded-xl py-2 px-6 bg-gray-900 hover:bg-gray-700">
                 Fazer Login
               </button>
             </Link>  

@@ -11,18 +11,33 @@ import MusicList from "../../components/MusicList";
 import formatTime from "../../misc/formatTime";
 import calcListDuration from "../../misc/calcListDuration";
 import { BsFillPlayCircleFill } from "react-icons/bs";
+import { verify } from "jsonwebtoken";
+import { HiPencil } from 'react-icons/hi'
+import router from "next/router"
+
+interface IAuthToken {
+  id: string;
+}
 
 interface IAppProps {
   album: IAlbum;
+  authorized: boolean;
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   const album_url = `${process.env.NEXT_PUBLIC_API_URL}/album/${params!.id}`;
   const album = await axios.get(album_url);
 
+  let authorized: boolean = false;
+  if (req.cookies.auth) {
+    const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
+    if (decoded.id == album.data.author._id) authorized = true;
+  }
+
   return {
     props: {
-      album: album.data
+      album: album.data,
+      authorized: authorized
     }
   }
 }
@@ -61,6 +76,9 @@ const AlbumPage: NextPage<IAppProps> = (props) => {
         </div>
         <div className="absolute bottom-5 right-20">
           <div className="inline-block [&>*]:mx-2">
+            { props.authorized ? 
+            <HiPencil title="Editar álbum" className="text-black p-2 inline-block cursor-pointer bg-white/80 hover:bg-white rounded-full" size={40} onClick={() => { router.push(`./${ router.query.id }/edit`) }} />
+            : null }
             <BsFillPlayCircleFill title="Tocar álbum" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={() => handlePlay() } />
           </div>
         </div>

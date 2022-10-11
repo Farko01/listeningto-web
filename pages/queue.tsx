@@ -73,27 +73,6 @@ const Home: NextPage = () => {
     return jsxMusicsOrdered
   }
   
-  const PlayerQueue = () => {
-    return (
-      <div className="flex flex-col ml-2">
-        <div className="basis-24 flex flex-col pb-2 border-b-2 border-gray-900 mb-2">
-          <h1 className="font-fjalla text-xl mb-2">Tocando:</h1>
-          <div className="flex flex-row items-center">
-            <div className="h-16 w-16">
-              <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info!.cover}`} width="100%" height="100%" objectFit="cover" />
-            </div>
-            <div className="flex flex-col justify-center ml-4">
-              <h1 className="text-base">{ info!.music.name }</h1>
-              <h2 className="text-sm text-white/75">{ info!.album ? <Link href={`/album/${info!.album._id}`}>{info!.album.name}</Link> : null }</h2>
-              <h2 className="text-sm text-white/75">{ displayAuthors() }</h2>
-            </div>
-          </div>
-        </div>
-        { displayMusics() }
-      </div>
-    )
-  }
-  
   return (
     <>
       <Head>
