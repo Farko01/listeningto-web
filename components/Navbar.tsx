@@ -9,7 +9,7 @@ import IUser from '../interfaces/user.interface'
 import jwt from 'jsonwebtoken'
 import Router from 'next/router'
 import Link from 'next/link'
-import { VscAccount } from 'react-icons/vsc'
+import { VscAccount, VscLibrary } from 'react-icons/vsc'
 import { ImExit } from 'react-icons/im'
 import { HiOutlinePlus } from 'react-icons/hi'
 
@@ -68,6 +68,12 @@ const Navbar = () => {
             <div className='group'>
               <AiFillHome title="Home" />
               <h1 className='text-xl pointer-events-none font-semibold text-center inline-block -ml-36 transition-all ease-in-out duration-500 -translate-x-10 opacity-0 group-hover:ml-0 group-hover:translate-x-0 group-hover:opacity-100'>Página Principal</h1>
+            </div>
+          </Link>
+          <Link href={"/library"}>
+            <div className='group'>
+              <VscLibrary title="Biblioteca" />
+              <h1 className='text-xl pointer-events-none font-semibold text-center inline-block -ml-20 transition-all ease-in-out duration-500 -translate-x-10 opacity-0 group-hover:ml-0 group-hover:translate-x-0 group-hover:opacity-100'>Biblioteca</h1>
             </div>
           </Link>
           <div className='group'>

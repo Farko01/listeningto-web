@@ -31,12 +31,10 @@ const SignupPage: NextPage = () => {
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
 
-  const [alert, setAlert] = useState("");
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (password !== cPassword) return setAlert("As senhas são diferentes");
+    if (password !== cPassword) return toast.error("As senhas são diferentes");
 
     fetch("/api/user", {
       method: 'POST',
