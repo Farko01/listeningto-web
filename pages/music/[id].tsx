@@ -8,28 +8,52 @@ import MusicList from '../../components/MusicList';
 import Link from "next/link";
 import { useUpdateMisc } from "../../contexts/MiscContext";
 import { MdDownloadForOffline } from "react-icons/md";
-import { BsFillPlayCircleFill } from "react-icons/bs";
+import { BsFillPlayCircleFill, BsPlusCircleFill, BsXCircle } from "react-icons/bs";
 import { useUpdatePlayer } from '../../contexts/PlayerContext';
 import formatDate from "../../misc/formatDate";
 import formatTime from "../../misc/formatTime";
-import calcListDuration from "../../misc/calcListDuration";
+import { useState } from "react";
+import { verify } from "jsonwebtoken";
+import { toast } from "react-toastify";
+import { IPlaylist } from "../../interfaces/playlist.interface";
+import { HiOutlinePlus } from "react-icons/hi";
+import { useRouter } from "next/router";
+
+interface IAuthToken {
+  id: string;
+}
 
 interface IAppProps {
   music: IMusic;
   album: IAlbum | null;
+  authorized: boolean;
+  auth: string | null;
+  playlists: IPlaylist[] | null;
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   const music_url = `${process.env.NEXT_PUBLIC_API_URL}/music/${params!.id}`
   const music_data = await axios.get(music_url);
 
   const musicAlbum_url = `${process.env.NEXT_PUBLIC_API_URL}/music/${params!.id}/album`;
   const musicAlbum = await axios.get(musicAlbum_url);
 
+  let playlists;
+  let authorized: boolean = false;
+  if (req.cookies.auth) {
+    const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
+    if (decoded.id == music_data.data.authors[0]._id) authorized = true;
+
+    playlists = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${decoded.id}/playlists`, { headers: { Authorization: `Bearer ${req.cookies.auth}` } });
+  }
+
   return {
     props: {
       music: music_data.data,
-      album: musicAlbum.data
+      album: musicAlbum.data,
+      authorized: authorized,
+      auth: req.cookies.auth ? req.cookies.auth : null,
+      playlists: playlists ? playlists.data.playlists : null
     }
   }
 }
@@ -41,6 +65,7 @@ const MusicPage: NextPage<IAppProps> = (props) => {
   setNavbar(true);
 
   const { setMusicList } = useUpdatePlayer()!;
+  const router = useRouter();
   
   const hasAlbum: boolean = props.album ? true : false;
 
@@ -80,6 +105,41 @@ const MusicPage: NextPage<IAppProps> = (props) => {
     }
   }
 
+  // Model
+  const [showModel, setShowModel] = useState<boolean>(false);
+
+  const handleAddPlaylistButton = () => {
+    if (!props.auth) return toast.error("Você precisa estar logado para adicionar uma música à uma playlist.");
+
+    setShowModel(true);
+  }
+
+  const [playlists, setPlaylists] = useState(props.playlists);
+  const handleAddPlaylist = (playlistId: string, musicId: string) => {
+    const formdata = new FormData();
+    formdata.append("musics", musicId);
+
+    fetch(`/api/playlist/${playlistId}`, {
+      method: "PATCH",
+      headers: { "Authorization": `Bearer ${props.auth}` },
+      body: formdata
+    }).then((res) => res.json()).then((data) => {
+      if (data.message) return toast.error(data.message);
+
+      const index = playlists!.findIndex(playlist => {
+        return playlist._id == playlistId;
+      });
+
+      const newPlaylists = [...playlists!];
+      newPlaylists[index] = data;
+
+      setPlaylists(newPlaylists);
+      return toast.success(`"${props.music.name}" adicionada à playlist "${data.name}"`);
+    }).catch((e: any) => {
+      return toast.error(e.message);
+    });
+  }
+
   return (
     <div>
       <Head>
@@ -103,8 +163,9 @@ const MusicPage: NextPage<IAppProps> = (props) => {
         </div>
         <div className="absolute bottom-5 right-20">
           <div className="inline-block [&>*]:mx-2">
-            <BsFillPlayCircleFill title="Tocar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={() => handlePlay() } />
-            <MdDownloadForOffline title="Baixar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={48} onClick={() => handleDownload() } />
+            <BsFillPlayCircleFill title="Tocar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={handlePlay} />
+            <MdDownloadForOffline title="Baixar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={48} onClick={handleDownload} />
+            <BsPlusCircleFill title="Adicionar à playlist" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={handleAddPlaylistButton} />
           </div>
         </div>
       </div>
@@ -113,6 +174,34 @@ const MusicPage: NextPage<IAppProps> = (props) => {
           <div className="mt-12 bg-white/10 p-4 shadow-xl shadow-black/50">
             <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Álbum</h1>
             { ShowAlbum() }
+          </div>
+        </div>
+      </div>
+
+      {/* Model */}
+      <div className={`fixed top-0 left-0 z-10 w-full h-full justify-center items-center bg-black/40 ${showModel ? "flex" : "hidden"}`}>
+        <div className='w-1/2 h-5/6 p-4 bg-box border-2 relative overflow-hidden'>
+          <BsXCircle size={24} className="float-right cursor-pointer" onClick={() => { setShowModel(false) }} />
+          <h1 className='text-2xl font-fjalla mb-2'>Selecionar playlist</h1>
+          <div className="w-fit">
+            {
+              (playlists?.filter((p) => { return !p.musics?.some((music) => { return music._id == props.music._id }) }))?.map((playlist) => {
+                return (
+                  <div className="flex items-center even:bg-white/50 odd:bg-gray-300 p-2 cursor-pointer" onClick={() => { handleAddPlaylist(playlist._id, props.music._id) }}>
+                    <span className="mr-2">
+                      <Image src={process.env.NEXT_PUBLIC_API_URL + playlist.cover} width={56} height={56} />
+                    </span>
+                    <p className="font-barlow text-lg text-black">
+                      { playlist.name }
+                    </p>
+                  </div>
+                )
+              })
+            }
+            <button onClick={() => { router.push("/new") }} className='ml-2 mt-2 py-1 px-2 block border border-blue-900 font-semibold rounded-md bg-primary hover:bg-primary/50'>
+              <HiOutlinePlus size={20} className='inline-block' />
+              <p className='inline-block ml-1'>Criar nova playlist</p>
+            </button>
           </div>
         </div>
       </div>

@@ -307,7 +307,7 @@ const Player = () => {
       }
 
       return (
-        <div className="absolute left-4 flex flex-row items-center justify-start w-1/4 gap-4">
+        <div className="flex flex-row items-center justify-start gap-4">
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 shrink-0">
               <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info.cover}`} width="100%" height="100%" objectFit="cover" />
@@ -331,9 +331,11 @@ const Player = () => {
     <div id="player" className="fixed bottom-0 left-0 w-full text-white">
       <div className="relative bg-primary bg-gradient-to-b from-blue-900/50 border-t-2 border-white/20 w-full h-28 flex justify-center items-center p-4">
         {/* Music Info */}
-        <MusicInfo />
+        <div className='basis-1/6 mx-2'>
+          <MusicInfo />
+        </div>
         
-        <div className="w-full flex flex-col items-center gap-6 md:flex">
+        <div className="basis-4/6 flex flex-col items-center gap-6 mx-2">
           {/* Buttons */}
           <IconContext.Provider value={{ size: '30px' }}>
             <div className="flex items-center gap-3 -mb-4">
@@ -378,7 +380,7 @@ const Player = () => {
         </div>
 
         {/* Volume */}
-        <div className='absolute right-4'>
+        <div className='basis-1/6 mx-2'>
           <IconContext.Provider value={{ className: "mx-2", size: "30px" }}>
             <div className="flex items-center gap-2">
               <IoLibraryOutline title={"Lista de Reprodução"} className="cursor-pointer" onClick={() => { queueRedirect() }} />

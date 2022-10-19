@@ -3,7 +3,6 @@ import { verify } from "jsonwebtoken";
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
-import cookie from "cookie";
 import Link from 'next/link';
 
 import { IMusic } from "../../interfaces/music.interface";
