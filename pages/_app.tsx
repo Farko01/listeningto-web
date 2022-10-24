@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className="font-roboto">
+    <div className="font-roboto py-2">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />

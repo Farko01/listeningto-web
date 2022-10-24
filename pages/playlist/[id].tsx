@@ -10,11 +10,11 @@ import formatDate from "../../misc/formatDate";
 import calcListDuration from "../../misc/calcListDuration";
 import formatTime from "../../misc/formatTime";
 import { HiPencil } from "react-icons/hi";
-import { BsFillPlayCircleFill, BsFillPlayFill, BsFillTrashFill } from "react-icons/bs";
+import { BsFillPlayCircleFill, BsFillPlayFill, BsFillTrashFill, BsLockFill, BsUnlockFill } from "react-icons/bs";
 import { useUpdatePlayer } from "../../contexts/PlayerContext";
-import router from "next/router"
 import { toast } from "react-toastify";
 import { useState } from "react";
+import router from 'next/router'
 
 interface IAuthToken {
   id: string;
@@ -24,21 +24,32 @@ interface IAppProps {
   playlist: IPlaylist;
   authorized: boolean;
   auth: string | null;
+  canAccess: boolean;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   const playlist_url = `${process.env.NEXT_PUBLIC_API_URL}/playlist/${params!.id}`
-  const playlist_data = await axios.get(playlist_url);
+  const res = await fetch(playlist_url, req.cookies.auth ? { headers: { "Authorization": `Bearer ${req.cookies.auth}` } } : undefined);
+  const data = await res.json();
+
+  if (data.message)
+  return {
+    props: {},
+    redirect: {
+      destination: "/",
+      permanent: false
+    }
+  }
 
   let authorized: boolean = false;
   if (req.cookies.auth) {
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-    if (decoded.id == playlist_data.data.createdBy._id) authorized = true;
+    if (decoded?.id == data.createdBy._id) authorized = true;
   }
 
   return {
     props: {
-      playlist: playlist_data.data,
+      playlist: data,
       authorized: authorized,
       auth: req.cookies.auth ? req.cookies.auth : null,
     }
@@ -81,6 +92,26 @@ const PlaylistPage: NextPage<IAppProps> = (props) => {
       return toast.error(e.message);
     });
   }
+
+  const [isPrivate, setIsPrivate] = useState(props.playlist.private);
+  const switchPrivateStatus = () => {
+    const prevVal = isPrivate;
+    const formdata = new FormData();
+    formdata.append("private", (!prevVal).toString());
+
+    fetch("/api/playlist/" + props.playlist._id, {
+      method: "PATCH",
+      headers: { "Authorization": `Bearer ${props.auth}` },
+      body: formdata
+    }).then((res) => res.json()).then((data) => {
+      if (data.message) throw new Error(data.message);
+
+      setIsPrivate(!prevVal);
+      toast.success(`"${props.playlist.name}" tornada ${ !prevVal ? "privada" : "pública" }`);
+    }).catch((e: any) => {
+      return toast.error(e.message);
+    });
+  }
   
   return (
     <div>
@@ -103,9 +134,14 @@ const PlaylistPage: NextPage<IAppProps> = (props) => {
           </div>
         </div>
         <div className="absolute bottom-5 right-20">
-          <div className="inline-block [&>*]:mx-2">
+          <div className="[&>*]:mx-2 flex justify-center">
             { props.authorized ? 
-            <HiPencil title="Editar playlist" className="text-black p-2 inline-block cursor-pointer bg-white/80 hover:bg-white rounded-full" size={40} onClick={() => { router.push(`./${ router.query.id }/edit`) }} />
+            <>
+              <span className="group rounded-full h-10 w-10 bg-white/80 group-hover:bg-white inline-block cursor-pointer" onClick={switchPrivateStatus}>
+                { isPrivate ? <BsLockFill size={40} className="text-black p-2" title="Tornar playlist pública" /> : <BsUnlockFill size={40} className="text-black p-2" title="Tornar playlist privada" /> }
+              </span>
+              <HiPencil title="Editar playlist" className="text-black p-2 inline-block cursor-pointer bg-white/80 hover:bg-white rounded-full" size={40} onClick={() => { router.push(`./${ router.query.id }/edit`) }} />
+            </>
             : null }
             <BsFillPlayCircleFill title="Tocar playlist" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={() => handlePlay() } />
           </div>

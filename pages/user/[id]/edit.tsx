@@ -1,6 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
 import { ChangeEvent, useEffect, useState } from "react";
-import cookie from "cookie";
 import { verify } from "jsonwebtoken";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -16,32 +15,32 @@ interface IAuthToken {
 }
 
 interface IAppProps {
-  authorized: boolean;
   auth: string;
   data: IUser;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
-  let authorized: boolean = false;
-  let parsedCookies: any;
-
-  if (req.headers.cookie) {
-    parsedCookies = cookie.parse(req.headers.cookie);
-
-    if (parsedCookies.auth) {
-      const decoded = verify(parsedCookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-      if (decoded.id == params!.id) authorized = true;
+  if (req.cookies.auth) {
+    const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
+    if (decoded.id == params!.id) {
+      return {
+        props: {},
+        redirect: {
+          destination: "/",
+          permanent: false
+        }
+      }
     }
   }
 
   const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${params!.id}`;
-  const res = await axios.get(url, authorized ? { headers: { Authorization: `Bearer ${parsedCookies!.auth}` } } : undefined);
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${req.cookies.auth}` } });
+  const data = await res.json();
 
   return {
     props: {
-      authorized: authorized,
-      auth: parsedCookies.auth,
-	    data: res.data
+      auth: req.cookies.auth,
+	    data: data
     },
   };
 };
@@ -54,10 +53,6 @@ const EditPage: NextPage<IAppProps> = (props) => {
   
   const router = useRouter();
   const { id } = router.query;
-
-  useEffect(() => {
-    if (!props.authorized) router.push(`../${id}`);
-  });
 
   const [profilePic, setProfilePic] = useState<any>(process.env.NEXT_PUBLIC_API_URL + props.data.profilePic);
   const [profilePicFile, setProfilePicFile] = useState<File>();

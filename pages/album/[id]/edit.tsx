@@ -20,7 +20,6 @@ interface IAuthToken {
 }
 
 interface IAppProps {
-  authorized: boolean;
   auth: string;
   album: IAlbum;
 }
@@ -29,15 +28,21 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
   const album_url = `${process.env.NEXT_PUBLIC_API_URL}/album/${params!.id}`;
   const album = await axios.get(album_url);
 
-  let authorized: boolean = false;
   if (req.cookies.auth) {
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-    if (decoded.id == album.data.author._id) authorized = true;
+    if (decoded.id == album.data.author._id) {
+      return {
+        props: {},
+        redirect: {
+          destination: "/",
+          permanent: false
+        }
+      }
+    }
   }
 
   return {
     props: {
-      authorized: authorized,
       auth: req.cookies.auth ? req.cookies.auth : null,
 	    album: album.data
     },
@@ -49,10 +54,6 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
   const { setPlayer, setNavbar } = useUpdateMisc()!;
   setPlayer(false);
   setNavbar(true);
-  
-  useEffect(() => {
-    if (!props.authorized) router.push(`../${ router.query.id }`);
-  });
 
   // DnD da ordem das músicas
   const [musics, setMusics] = useState(props.album.musics);

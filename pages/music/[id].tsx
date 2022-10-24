@@ -16,7 +16,7 @@ import { useState } from "react";
 import { verify } from "jsonwebtoken";
 import { toast } from "react-toastify";
 import { IPlaylist } from "../../interfaces/playlist.interface";
-import { HiOutlinePlus } from "react-icons/hi";
+import { HiOutlinePlus, HiPencil } from "react-icons/hi";
 import { useRouter } from "next/router";
 
 interface IAuthToken {
@@ -163,6 +163,9 @@ const MusicPage: NextPage<IAppProps> = (props) => {
         </div>
         <div className="absolute bottom-5 right-20">
           <div className="inline-block [&>*]:mx-2">
+            { props.authorized ? 
+            <HiPencil title="Editar álbum" className="text-black p-2 inline-block cursor-pointer bg-white/80 hover:bg-white rounded-full" size={40} onClick={() => { router.push(`./${ router.query.id }/edit`) }} />
+            : null }
             <BsFillPlayCircleFill title="Tocar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={handlePlay} />
             <MdDownloadForOffline title="Baixar música" className="text-white/80 hover:text-white inline-block cursor-pointer" size={48} onClick={handleDownload} />
             <BsPlusCircleFill title="Adicionar à playlist" className="text-white/80 hover:text-white inline-block cursor-pointer" size={40} onClick={handleAddPlaylistButton} />
