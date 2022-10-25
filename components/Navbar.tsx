@@ -70,10 +70,12 @@ const Navbar = () => {
               <h1 className='text-xl pointer-events-none font-semibold text-center inline-block -ml-36 transition-all ease-in-out duration-500 -translate-x-10 opacity-0 group-hover:ml-0 group-hover:translate-x-0 group-hover:opacity-100'>Página Principal</h1>
             </div>
           </Link>
-          <div className='group'>
-            <GoSearch title="Buscar" />
-            <h1 className='text-xl pointer-events-none font-semibold text-center inline-block -ml-20 transition-all ease-in-out duration-500 -translate-x-10 opacity-0 group-hover:ml-0 group-hover:translate-x-0 group-hover:opacity-100'>Buscar</h1>
-          </div>
+          <Link href={"/search"}>
+            <div className='group'>
+              <GoSearch title="Buscar" />
+              <h1 className='text-xl pointer-events-none font-semibold text-center inline-block -ml-20 transition-all ease-in-out duration-500 -translate-x-10 opacity-0 group-hover:ml-0 group-hover:translate-x-0 group-hover:opacity-100'>Buscar</h1>
+            </div>
+          </Link>
         </IconContext.Provider>
 
         <div className='absolute right-10'>

@@ -4,7 +4,6 @@ import { FormEvent, useState, useEffect } from "react";
 import Router from "next/router";
 import Cookies from "universal-cookie";
 import Image from 'next/image';
-
 import { VscAccount } from 'react-icons/vsc';
 import { HiOutlineMail } from 'react-icons/hi';
 import { AiOutlineLock } from 'react-icons/ai';
