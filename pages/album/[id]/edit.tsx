@@ -3,7 +3,7 @@ import { verify } from "jsonwebtoken";
 import type { NextPage, GetServerSideProps } from "next";
 import Head from "next/head";
 import router from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { IAlbum } from "../../../interfaces/album.interface";
 import Image from "next/image"
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req }) =>
 
   if (req.cookies.auth) {
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-    if (decoded.id == album.data.author._id) {
+    if (decoded.id != album.data.author._id) {
       return {
         props: {},
         redirect: {

@@ -2,7 +2,6 @@ import type { NextPage, GetServerSideProps } from "next";
 import { ChangeEvent, useEffect, useState } from "react";
 import { verify } from "jsonwebtoken";
 import { useRouter } from "next/router";
-import axios from "axios";
 import Head from 'next/head';
 import Image from "next/image";
 import IUser from "../../../interfaces/user.interface";
@@ -22,7 +21,7 @@ interface IAppProps {
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
   if (req.cookies.auth) {
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-    if (decoded.id == params!.id) {
+    if (decoded.id != params!.id) {
       return {
         props: {},
         redirect: {

@@ -4,11 +4,9 @@ import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import Link from 'next/link';
-
 import { IMusic } from "../../interfaces/music.interface";
 import { IAlbum } from "../../interfaces/album.interface";
 import { IPlaylist } from "../../interfaces/playlist.interface";
-
 import MusicList from '../../components/MusicList';
 import Card from "../../components/Card";
 import { useUpdateMisc } from "../../contexts/MiscContext";
