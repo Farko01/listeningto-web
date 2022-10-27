@@ -12,7 +12,7 @@ interface IAppProps {
 const Card: React.FC<IAppProps> = ({ image, text, subtext, link }) => {
   return (
     <div className="h-60 w-48 bg-white/10 shadow-lg shadow-black/50 p-4 font-barlow">
-			<Image src={image} width={168} height={168} />
+			<Image src={image} width={168} height={168} alt="" />
 
 			<Link href={link}>
 				<a>

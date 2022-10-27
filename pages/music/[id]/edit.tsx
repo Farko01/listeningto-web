@@ -162,13 +162,13 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
 
       <div className="w-5/6 h-5/6 bg-white/10 relative pb-16">
         <div className="ml-16 mt-16 w-11/12 mb-4">
-          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar "{props.music.name}"</h1>
+          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar &quot;{props.music.name}&quot;</h1>
 
           {/* Imagem de cover */}
           <div className="relative h-64 w-64 mt-8">
             <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
             <label htmlFor="file" className="cursor-pointer">
-              <Image src={cover} width={256} height={256} className="block" />
+              <Image src={cover} width={256} height={256} className="block" alt="" />
               <div className="absolute top-0 left-0 h-full w-full bg-black/60 flex flex-col items-center justify-center opacity-0 transition-opacity hover:opacity-100">
                 <FiUpload size={100} className="text-gray-900/90" />
               </div>
@@ -190,9 +190,9 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
                   <h1 className='font-fjalla text-2xl mt-2'>Autores</h1>
                   <div className='mt-2 flex flex-col w-1/4'>
                     {
-                      authors.map((user) => {
+                      authors.map((user, i) => {
                         return (
-                          <div className='p-1 even:bg-gray-500 odd:bg-gray-600 text-black'>
+                          <div key={i} className='p-1 even:bg-gray-500 odd:bg-gray-600 text-black'>
                             <span>{ user.username }</span>
                             { user._id == props.music.authors[0]._id ? null : <BsFillTrashFill onClick={() => { handleDeleteAuthor(user._id) }} className='float-right my-1 mr-1 inline-block cursor-pointer hover:text-red-800' size={16} /> }
                           </div>
@@ -214,9 +214,9 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
               </div>
               <div className='mt-2 flex flex-row gap-2 flex-wrap'>
                 {
-                  tags.map((tag) => {
+                  tags.map((tag, i) => {
                     return (
-                      <div className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
+                      <div key={i} className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
                         <span className='ml-1 inline-block'>
                           { tag }
                         </span>
@@ -248,7 +248,7 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
             {
               (modelSearchRes?.filter((user) => { return !authors.some((author) => author._id == user._id) }))?.map((user, i) => {
                 return (
-                  <div className='even:bg-white odd:bg-gray-300 p-1 relative'>
+                  <div key={i} className='even:bg-white odd:bg-gray-300 p-1 relative'>
                     <span className='inline-block'>{ i + 1 }.</span>
                     <span className='ml-1 inline-block'>{ user.username }</span>
                     <HiOutlinePlus onClick={() => { setAuthors([...authors, user]); setShowModel(false) }} className='float-right my-1 mr-1 inline-block cursor-pointer hover:text-green-800' size={16} />

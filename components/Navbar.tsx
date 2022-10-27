@@ -83,7 +83,7 @@ const Navbar = () => {
             userData ? 
             <div ref={dropdownRef}>
               <button className='h-12 w-12 z-30' onClick={() => { const prevVal = showDropdown; setShowDropdown(!prevVal) }}>
-                <Image src={process.env.NEXT_PUBLIC_API_URL + userData.profilePic} layout={'fill'} className="rounded-full cursor-pointer z-30" />
+                <Image src={process.env.NEXT_PUBLIC_API_URL + userData.profilePic} layout={'fill'} className="rounded-full cursor-pointer z-30" alt='' />
               </button>
 
               <div className={`absolute z-20 -mt-16 -ml-56 w-72 h-96 flex flex-col bg-primary/[.98] bg-gradient-to-b from-blue-900/[.98] shadow-inner shadow-black ${ showDropdown ? 'block' : 'hidden' }`}>

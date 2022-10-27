@@ -120,7 +120,7 @@ const PlaylistPage: NextPage<IAppProps> = (props) => {
 
       <div className="relative flex w-full h-full border-b-2 border-blue-900">
         <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
-          <Image src={process.env.NEXT_PUBLIC_API_URL + props.playlist.cover} width={256} height={256} />
+          <Image src={process.env.NEXT_PUBLIC_API_URL + props.playlist.cover} width={256} height={256} alt="" />
         </div>
         <div className="h-64 p-4 flex mt-20 ml-4 flex-col">
           <div className="basis-2/3">

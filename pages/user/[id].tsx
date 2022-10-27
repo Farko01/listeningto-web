@@ -71,8 +71,8 @@ const UserPage: NextPage<IAppProps> = (props) => {
     if (props.albums.length > 0) {
       return (
         <div className="flex flex-wrap w-full [&>*]:m-2">
-          { props.albums.map((album) => {
-            return <Card image={ process.env.NEXT_PUBLIC_API_URL + album.cover } text={ album.name } subtext="Álbum" link={"/album/" + album._id } />
+          { props.albums.map((album, i) => {
+            return <Card key={i} image={ process.env.NEXT_PUBLIC_API_URL + album.cover } text={ album.name } subtext="Álbum" link={"/album/" + album._id } />
           }) }
         </div>
       )
@@ -83,8 +83,8 @@ const UserPage: NextPage<IAppProps> = (props) => {
     if (props.playlists.length > 0) {
       return (
         <div className="flex flex-wrap w-full [&>*]:m-2">
-          { props.playlists.map((playlist) => {
-            return <Card image={ process.env.NEXT_PUBLIC_API_URL + playlist.cover } text={ playlist.name } subtext="Playlist" link={"/playlist/" + playlist._id } />
+          { props.playlists.map((playlist, i) => {
+            return <Card key={i} image={ process.env.NEXT_PUBLIC_API_URL + playlist.cover } text={ playlist.name } subtext="Playlist" link={"/playlist/" + playlist._id } />
           }) }
         </div>
       )
@@ -101,7 +101,7 @@ const UserPage: NextPage<IAppProps> = (props) => {
         {/* Header */}
         <div className="relative flex w-full border-b-2 border-blue-900 h-96">
           <div className="mt-20 ml-20 h-64 w-64">
-            <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} className="rounded-full" />
+            <Image src={process.env.NEXT_PUBLIC_API_URL + props.data.profilePic} width={256} height={256} className="rounded-full" alt="" />
           </div>
           <h1 className="text-5xl antialiased mt-48 ml-16">{props.data.username}</h1>
 

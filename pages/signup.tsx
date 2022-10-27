@@ -55,7 +55,7 @@ const SignupPage: NextPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-primary w-11/12 md:w-1/4 p-8 border-2 border-white/20">
           <div className="flex items-center justify-center my-8">
-            <Image src={"/logo.png"} width={128} height={128} className="mx-auto" />
+            <Image src={"/logo.png"} width={128} height={128} className="mx-auto" alt="" />
           </div>
           <h1 className="text-white/80 text-center mb-8 -mt-4 text-2xl">Sign up</h1>
 

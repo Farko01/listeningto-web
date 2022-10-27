@@ -117,7 +117,7 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
     }).then((res) => {
       if (res.status !== 204) res.json().then((data) => { throw new Error(data.message) });
 
-      toast.success(`Álbum deletada: ${props.playlist.name}`);
+      toast.success(`Álbum deletado: ${props.playlist.name}`);
       router.push("/");
     }).catch((e: any) => {
       return toast.error(e.message);
@@ -132,15 +132,13 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
 
       <div className="w-5/6 h-5/6 bg-white/10 relative pb-16">
         <div className="ml-16 mt-16 w-11/12">
-          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar "{props.playlist.name}"</h1>
-
-
+          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar &quot;{props.playlist.name}&quot;</h1>
 
           <div className="flex mt-8">
             <div className="basis-1/2 relative mt-8">
               <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
               <label htmlFor="file" className="cursor-pointer">
-                <Image src={cover} width={256} height={256} className="block" />
+                <Image src={cover} width={256} height={256} className="block" alt="" />
                 <div className="absolute top-0 left-0 h-64 w-64 bg-black/60 flex flex-col items-center justify-center opacity-0 transition-opacity hover:opacity-100">
                   <FiUpload size={100} className="text-gray-900/90" />
                 </div>
@@ -155,9 +153,9 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
               </div>
               <div className='mt-2 flex flex-row gap-2 flex-wrap'>
                 {
-                  tags.map((tag) => {
+                  tags.map((tag, i) => {
                     return (
-                      <div className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
+                      <div key={i} className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
                         <span className='ml-1 inline-block'>
                           { tag }
                         </span>

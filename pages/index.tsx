@@ -56,7 +56,7 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
       </Head>
 
       <div className="h-[70vh] mt-12 mx-16 flex flex-col items-center justify-center bg-blue-900/20 bg-gradient-to-r to-blue-500 border-2 border-white/50">
-        <Image src={"/logo.png"} width={256} height={256} className="" />
+        <Image src={"/logo.png"} width={256} height={256} alt="" />
         <div className="drop-shadow-[0_5px_3px_rgba(0,0,0,0.4)] text-center">
           <h1 className="font-overpass mt-6 mb-3 text-4xl">Listeningto</h1>
           <h2 className="font-roboto text-xl">Liberdade para criar e ouvir.</h2>
@@ -70,8 +70,8 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
             <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Suas playlists</h1>
             <div className="flex flex-wrap w-full [&>*]:m-2">
               {
-                [...userPlaylists].map((playlist) => {
-                  return <Card image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/playlist/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />
+                [...userPlaylists].map((playlist, i) => {
+                  return <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/playlist/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />
                 })
               }
             </div>
@@ -86,7 +86,7 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
               [...musics].reverse().map((music, i) => {
                 if (i + 1 > 6) return
 
-                return <Card image={process.env.NEXT_PUBLIC_API_URL + music.cover} link={`/music/${music._id}`} text={music.name} subtext={"Música"} />
+                return <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + music.cover} link={`/music/${music._id}`} text={music.name} subtext={"Música"} />
               })
             }
           </div>
@@ -99,7 +99,7 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
               [...albums].reverse().map((album, i) => {
                 if (i + 1 > 6) return
 
-                return <Card image={process.env.NEXT_PUBLIC_API_URL + album.cover} link={`/album/${album._id}`} text={album.name} subtext={"Álbum"} />
+                return <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + album.cover} link={`/album/${album._id}`} text={album.name} subtext={"Álbum"} />
               })
             }
           </div>

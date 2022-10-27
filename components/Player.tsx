@@ -310,7 +310,7 @@ const Player = () => {
         <div className="flex flex-row items-center justify-start gap-4">
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 shrink-0">
-              <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info.cover}`} width="100%" height="100%" objectFit="cover" />
+              <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info.cover}`} width="100%" height="100%" objectFit="cover" alt='' />
             </div>
 
             <div>

@@ -74,7 +74,7 @@ const Home: NextPage = () => {
   }
   
   return (
-    <>
+    <div>
       <Head>
         <title>Lista de Reprodução - Listeningto</title>
       </Head>
@@ -90,7 +90,7 @@ const Home: NextPage = () => {
                   <h1 className="font-fjalla text-xl mb-2">Tocando:</h1>
                   <div className="flex flex-row items-center">
                     <div className="h-16 w-16">
-                      <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info!.cover}`} width="100%" height="100%" objectFit="cover" />
+                      <Image src={`${process.env.NEXT_PUBLIC_API_URL}${info!.cover}`} width="100%" height="100%" objectFit="cover" alt="" />
                     </div>
                     <div className="flex flex-col justify-center ml-4">
                       <h1 className="text-base">{ info!.music.name }</h1>
@@ -109,7 +109,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

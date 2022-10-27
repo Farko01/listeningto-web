@@ -195,13 +195,13 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
 
       <div className="w-5/6 h-5/6 bg-white/10 relative pb-20">
         <div className="ml-16 mt-16 w-11/12">
-          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar "{props.album.name}"</h1>
+          <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar &quot;{props.album.name}&quot;</h1>
 
           {/* Foto de perfil */}
           <div className="relative h-64 w-64 mt-8">
             <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
             <label htmlFor="file" className="cursor-pointer">
-              <Image src={cover} width={256} height={256} className="block" />
+              <Image src={cover} width={256} height={256} className="block" alt="" />
               <div className="absolute top-0 left-0 h-full w-full bg-black/60 flex flex-col items-center justify-center opacity-0 transition-opacity hover:opacity-100">
                 <FiUpload size={100} className="text-gray-900/90" />
               </div>
@@ -231,7 +231,7 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
                             <Draggable key={music._id} draggableId={music._id} index={i}>
                               {(provided) => {
                                 return (
-                                  <div {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps} className="p-1 even:bg-gray-500 odd:bg-gray-600 text-black">
+                                  <div {...provided.draggableProps} key={music._id} ref={provided.innerRef} {...provided.dragHandleProps} className="p-1 even:bg-gray-500 odd:bg-gray-600 text-black">
                                     <span>{ music.name }</span>
                                     <BsFillTrashFill onClick={() => { deleteMusic(music._id) }} className='float-right my-1 mr-1 inline-block cursor-pointer hover:text-red-800' size={16} />
                                   </div>
@@ -261,9 +261,9 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
               </div>
               <div className='mt-2 flex flex-row gap-2 flex-wrap'>
                 {
-                  tags.map((tag) => {
+                  tags.map((tag, i) => {
                     return (
-                      <div className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
+                      <div key={i} className='rounded-2xl bg-gray-200 border-2 border-gray-500 text-black w-fit block'>
                         <span className='ml-1 inline-block'>
                           { tag }
                         </span>
@@ -295,7 +295,7 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
             {
               (modelSearchRes?.filter((music) => { return !musics.some((m) => m._id == music._id && !m.authors.some((a) => a._id == props.album.author._id)) }))?.map((music, i) => {
                 return (
-                  <div className='even:bg-white/50 odd:bg-gray-300 p-1 relative'>
+                  <div key={i} className='even:bg-white/50 odd:bg-gray-300 p-1 relative'>
                     <span className='inline-block'>{ i + 1 }.</span>
                     <span className='ml-1 inline-block'>{ music.name }</span>
                     <HiOutlinePlus onClick={() => { addMusic(music); setShowModel(false) }} className='float-right my-1 mr-1 inline-block cursor-pointer hover:text-green-800' size={16} />

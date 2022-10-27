@@ -75,7 +75,7 @@ const MusicList = (props: IAppProps) => {
   return (
     <ul>
       { props.musics.map((music, i) => {
-        return <MusicItem music={music} i={i} />
+        return <MusicItem key={i} music={music} i={i} />
       }) }
 
       { props.showMore && props.musics.length > 10 ? <span onClick={() => toggleShowMore()} className="ml-2 mt-2 cursor-pointer text-sm text-white/60">{ showMore ? "Mostrar menos" : "Mostrar mais" }</span> : null }

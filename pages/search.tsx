@@ -65,7 +65,7 @@ const SearchPage: NextPage = () => {
 						{
 							userRes.length > 0 || musicRes.length > 0 || albumRes.length > 0 || playlistRes.length > 0 ?
 							<div className="-mb-2">
-								<h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Resultados para "{searchedVal}"</h1>
+								<h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Resultados para &quot;{searchedVal}&quot;</h1>
 								{
 									userRes.length > 0 ?
 									<div className="pl-2 mb-2">
@@ -75,7 +75,7 @@ const SearchPage: NextPage = () => {
 										</div>
 										<div className={`flex-wrap w-full [&>*]:m-2 py-1 border-2 border-white/20 ${showUsers ? "flex" : "hidden"}`}>
 										{
-											userRes.map((user) => <Card image={process.env.NEXT_PUBLIC_API_URL + user.profilePic} link={`/user/${user._id}`} text={user.username} subtext={"Perfil de usuário"} />)
+											userRes.map((user, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + user.profilePic} link={`/user/${user._id}`} text={user.username} subtext={"Perfil de usuário"} />)
 										}
 										</div>
 									</div>
@@ -90,7 +90,7 @@ const SearchPage: NextPage = () => {
 										</div>
 										<div className={`flex-wrap w-full [&>*]:m-2 py-1 border-2 border-white/20 ${showMusics ? "flex" : "hidden"}`}>
 										{
-											musicRes.map((music) => <Card image={process.env.NEXT_PUBLIC_API_URL + music.cover} link={`/music/${music._id}`} text={music.name} subtext={"Música"} />)
+											musicRes.map((music, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + music.cover} link={`/music/${music._id}`} text={music.name} subtext={"Música"} />)
 										}
 										</div>
 									</div>
@@ -105,7 +105,7 @@ const SearchPage: NextPage = () => {
 										</div>
 										<div className={`flex-wrap w-full [&>*]:m-2 py-1 border-2 border-white/20 ${showAlbums ? "flex" : "hidden"}`}>
 										{
-											albumRes.map((album) => <Card image={process.env.NEXT_PUBLIC_API_URL + album.cover} link={`/album/${album._id}`} text={album.name} subtext={"Álbum"} />)
+											albumRes.map((album, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + album.cover} link={`/album/${album._id}`} text={album.name} subtext={"Álbum"} />)
 										}
 										</div>
 									</div>
@@ -120,14 +120,14 @@ const SearchPage: NextPage = () => {
 										</div>
 										<div className={`flex-wrap w-full [&>*]:m-2 py-1 border-2 border-white/20 ${showPlaylists ? "flex" : "hidden"}`}>
 										{
-											playlistRes.map((playlist) => <Card image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/album/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />)
+											playlistRes.map((playlist, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/album/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />)
 										}
 										</div>
 									</div>
 									: null
 								}
 							</div>
-							: <h1 className="text-2xl font-fjalla">Nenhum resultado para "{searchedVal}"</h1>
+							: <h1 className="text-2xl font-fjalla">Nenhum resultado para &quot;{searchedVal}&quot;</h1>
 						}
 						</div>
 					: null

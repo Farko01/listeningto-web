@@ -148,7 +148,7 @@ const MusicPage: NextPage<IAppProps> = (props) => {
       
       <div className="relative flex w-full h-full border-b-2 border-blue-900">
         <div className="ml-12 mt-20 mb-8 h-64 w-64 max-w-full">
-          <Image src={`${process.env.NEXT_PUBLIC_API_URL}${hasAlbum ? props.album!.cover! : props.music!.cover!}`} width={256} height={256} />
+          <Image src={`${process.env.NEXT_PUBLIC_API_URL}${hasAlbum ? props.album!.cover! : props.music!.cover!}`} width={256} height={256} alt="" />
         </div>
         <div className="h-64 p-4 flex mt-20 ml-4 flex-col">
           <div className="basis-2/3">
@@ -188,11 +188,11 @@ const MusicPage: NextPage<IAppProps> = (props) => {
           <h1 className='text-2xl font-fjalla mb-2'>Selecionar playlist</h1>
           <div className="w-fit">
             {
-              (playlists?.filter((p) => { return !p.musics?.some((music) => { return music._id == props.music._id }) }))?.map((playlist) => {
+              (playlists?.filter((p) => { return !p.musics?.some((music) => { return music._id == props.music._id }) }))?.map((playlist, i) => {
                 return (
-                  <div className="flex items-center even:bg-white/50 odd:bg-gray-300 p-2 cursor-pointer" onClick={() => { handleAddPlaylist(playlist._id, props.music._id) }}>
+                  <div key={i} className="flex items-center even:bg-white/50 odd:bg-gray-300 p-2 cursor-pointer" onClick={() => { handleAddPlaylist(playlist._id, props.music._id) }}>
                     <span className="mr-2">
-                      <Image src={process.env.NEXT_PUBLIC_API_URL + playlist.cover} width={56} height={56} />
+                      <Image src={process.env.NEXT_PUBLIC_API_URL + playlist.cover} width={56} height={56} alt="" />
                     </span>
                     <p className="font-barlow text-lg text-black">
                       { playlist.name }

@@ -113,7 +113,7 @@ const EditPage: NextPage<IAppProps> = (props) => {
           <div className="relative h-64 w-64 mt-8">
             <input id="file" type={"file"} onChange={(e) => handleImage(e)} className="hidden" />
             <label htmlFor="file" className="cursor-pointer">
-              <Image src={profilePic} width={256} height={256} className="rounded-full block" />
+              <Image src={profilePic} width={256} height={256} className="rounded-full block" alt="" />
               <div className="absolute top-0 left-0 h-full w-full rounded-full bg-black/60 flex flex-col items-center justify-center opacity-0 transition-opacity hover:opacity-100">
                 <FiUpload size={100} className="text-gray-900/90" />
               </div>
