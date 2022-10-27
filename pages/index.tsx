@@ -65,7 +65,7 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
 
       <div className="flex flex-col items-center">
         {
-          userPlaylists ?
+          userPlaylists && userPlaylists.length > 0 ?
           <div className="bg-box mt-12 p-4 shadow-xl shadow-black/50 w-11/12">
             <h1 className="mb-2 text-2xl font-fjalla border-b-4 border-gray-900">Suas playlists</h1>
             <div className="flex flex-wrap w-full [&>*]:m-2">
@@ -115,7 +115,7 @@ const Home: NextPage<IAppProps> = ({ musics, albums, user, userPlaylists }) => {
             </div>
 
             <Link href={"/signup"}>
-              <button onClick={() => console.log("click")} className="my-5 py-2 px-4 text-lg bg-blue-600 text-white font-semibold">Fazer registro</button>
+              <button className="my-5 py-2 px-4 text-lg bg-blue-600 text-white font-semibold">Fazer registro</button>
             </Link>
 
             <div className=" flex justify-center text-white/70">
