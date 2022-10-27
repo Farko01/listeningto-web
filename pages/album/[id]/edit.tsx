@@ -8,7 +8,7 @@ import { FiUpload } from "react-icons/fi";
 import { IAlbum } from "../../../interfaces/album.interface";
 import Image from "next/image"
 import { useUpdateMisc } from "../../../contexts/MiscContext";
-import { BsFillTrashFill, BsXCircle, BsXLg } from 'react-icons/bs';
+import { BsFillTrashFill, BsXCircle } from 'react-icons/bs';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { HiOutlinePlus } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
@@ -173,13 +173,27 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
     });
   }
 
+  const handleDelete = () => {
+    fetch(`/api/album/${props.album._id}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${props.auth}` }
+    }).then((res) => {
+      if (res.status !== 204) res.json().then((data) => { throw new Error(data.message) });
+
+      toast.success(`Álbum deletada: ${props.album.name}`);
+      router.push("/");
+    }).catch((e: any) => {
+      return toast.error(e.message);
+    });
+  }
+
   return (
     <div className="m-24 flex items-center justify-center">
       <Head>
         <title>Editar {props.album.name} - Listeningto</title>
       </Head>
 
-      <div className="w-5/6 h-5/6 pb-2 bg-white/10 relative">
+      <div className="w-5/6 h-5/6 bg-white/10 relative pb-20">
         <div className="ml-16 mt-16 w-11/12">
           <h1 className="font-fjalla text-3xl mt-8 border-b-4 border-black/50">Editar "{props.album.name}"</h1>
 
@@ -233,6 +247,7 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
                   }}
                 </Droppable>
               </DragDropContext>
+
               <button onClick={() => { const prevVal = showModel; setShowModel(!prevVal) }} className='mt-2 py-1 px-2 block border border-blue-900 font-semibold rounded-md bg-primary hover:bg-primary/50'>
                 <HiOutlinePlus size={20} className='inline-block' />
                 <p className='inline-block ml-1'>Adicionar música</p>
@@ -259,20 +274,20 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
                 }
               </div>
             </div>
-          </div>
-
-          <div className="absolute w-full pr-16 bottom-4 [&>*]:mx-2">
-            <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={handleSubmit}>Salvar alterações</button>
-            <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${ router.query.id }`)}>Cancelar</button>
-          </div>   
+          </div>  
         </div>
+        <div className="absolute w-full bottom-4 px-16 [&>*]:mx-2">
+          <button className="float-left border border-red-700 font-semibold rounded-xl py-2 px-4 bg-red-600 hover:bg-red-600/75" onClick={handleDelete}>Deletar álbum</button>
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={handleSubmit}>Salvar alterações</button>
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${ router.query.id }`)}>Cancelar</button>
+        </div>  
       </div>
 
-      <div className={`fixed top-0 left-0 z-10 w-full h-full justify-center items-center bg-black/40 ${showModel ? "flex" : "hidden"}`}>
+      <div id="model-bg" className={`fixed top-0 left-0 z-10 w-full h-full justify-center items-center bg-black/40 ${showModel ? "flex" : "hidden"}`} onClick={(e) => { if ((e.target as HTMLElement).id == "model-bg") setShowModel(false) }}>
         <div className='w-1/2 h-5/6 p-4 bg-box border-2 relative overflow-hidden'>
           <BsXCircle size={24} className="float-right cursor-pointer" onClick={() => { setShowModel(false); setModelSearchRes(undefined); setModelSearch("") }} />
           <h1 className='text-2xl font-fjalla mb-2'>Adicionar músicas</h1>
-          <div className='w-4/6 bg-white rounded-md flex items-center h-10'>
+          <div className='w-4/6 bg-white rounded-md flex items-center h-10' onKeyUp={(e) => { if (e.key == 'Enter') handleModelSearch()}}>
             <input onChange={(e) => setModelSearch(e.target.value)} value={modelSearch} type={"text"} className="rounded-md basis-11/12 text-black border-none appearance-none focus:ring-0" />
             <GoSearch onClick={handleModelSearch} size={30} className="text-black text-center basis-1/12 cursor-pointer" />
           </div>

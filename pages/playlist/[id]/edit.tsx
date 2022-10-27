@@ -1,4 +1,3 @@
-import axios from "axios";
 import { verify } from "jsonwebtoken";
 import type { NextPage, GetServerSideProps } from "next";
 import Head from "next/head";
@@ -21,26 +20,27 @@ interface IAppProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
-  const playlist_url = `${process.env.NEXT_PUBLIC_API_URL}/playlist/${params!.id}`
-  const playlist_data = await axios.get(playlist_url);
-
   if (req.cookies.auth) {
+    const playlist = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlist/${params!.id}`, { headers: { "Authorization": `Bearer ${req.cookies.auth}` } }).then((res) => res.json());
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;
-    if (decoded.id != playlist_data.data.createdBy._id) {
-      return {
-        props: {},
-        redirect: {
-          destination: "/",
-          permanent: false
+
+    if (!playlist.message) {
+      if (playlist.createdBy._id == decoded.id) {
+        return {
+          props: {
+            playlist: playlist,
+            auth: req.cookies.auth ? req.cookies.auth : null,
+          }
         }
       }
     }
   }
 
   return {
-    props: {
-      playlist: playlist_data.data,
-      auth: req.cookies.auth ? req.cookies.auth : null,
+    props: {},
+    redirect: {
+      destination: "/",
+      permanent: false
     }
   }
 }
@@ -110,6 +110,20 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
     });
   }
 
+  const handleDelete = () => {
+    fetch(`/api/playlist/${props.playlist._id}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${props.auth}` }
+    }).then((res) => {
+      if (res.status !== 204) res.json().then((data) => { throw new Error(data.message) });
+
+      toast.success(`Álbum deletada: ${props.playlist.name}`);
+      router.push("/");
+    }).catch((e: any) => {
+      return toast.error(e.message);
+    });
+  }
+
   return (
     <div className="m-24 flex items-center justify-center">
       <Head>
@@ -162,11 +176,12 @@ const EditAlbum: NextPage<IAppProps> = (props) => {
               <input id="musicName" type="text" className="bg-transparent text-white block w-96 outline-0 border-0 border-b-2 mt-0.5 appearance-none focus:ring-0" onChange={(e) => setName(e.target.value)} />
             </div>
           </div>
+        </div>
 
-          <div className="absolute w-full pr-16 bottom-4 [&>*]:mx-2">
-            <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={handleSubmit}>Salvar alterações</button>
-            <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${ router.query.id }`)}>Cancelar</button>
-          </div>   
+        <div className="absolute w-full bottom-4 px-16 [&>*]:mx-2">
+          <button className="float-left border border-red-700 font-semibold rounded-xl py-2 px-4 bg-red-600 hover:bg-red-600/75" onClick={handleDelete}>Deletar playlist</button>
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-primary hover:bg-primary/5" onClick={handleSubmit}>Salvar alterações</button>
+          <button className="float-right border border-blue-900 font-semibold rounded-xl py-2 px-4 bg-gray-900 hover:bg-gray-700" onClick={() => router.push(`../${ router.query.id }`)}>Cancelar</button>
         </div>
       </div>
     </div>

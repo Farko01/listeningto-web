@@ -1,5 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { verify } from "jsonwebtoken";
 import { useRouter } from "next/router";
 import Head from 'next/head';

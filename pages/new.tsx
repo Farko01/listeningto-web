@@ -89,6 +89,8 @@ const NewPage: NextPage<IAppProps> = (props) => {
   const [selectedType, setSelectedType] = useState("music");
 
   const handleSubmit = () => {
+    console.log(selectedType);
+
     switch(selectedType) {
       case "music": {
         if (!name || !musicFile) return toast.error("O nome e o arquivo da música é necessário.");
@@ -118,6 +120,8 @@ const NewPage: NextPage<IAppProps> = (props) => {
         }).catch((e: any) => {
           return toast.error(e.message);
         });
+
+        break;
       }
       case "album": {
         if (!name || !musics) return toast.error("O nome e as músicas do álbum são necessários.");
@@ -146,6 +150,8 @@ const NewPage: NextPage<IAppProps> = (props) => {
         }).catch((e: any) => {
           return toast.error(e.message);
         });
+
+        break;
       }
       case "playlist": {
         if (!name) return toast.error("O nome da playlist é necessário");
@@ -171,6 +177,8 @@ const NewPage: NextPage<IAppProps> = (props) => {
         }).catch((e: any) => {
           return toast.error(e.message);
         });
+
+        break;
       }
     }
   }
@@ -249,7 +257,7 @@ const NewPage: NextPage<IAppProps> = (props) => {
               <div className='w-1/2 h-5/6 p-4 bg-box border-2 relative overflow-hidden'>
                 <BsXCircle size={24} className="float-right cursor-pointer" onClick={() => { setShowModel(false); setModelSearchRes(undefined); setModelSearch("") }} />
                 <h1 className='text-2xl font-fjalla mb-2'>Adicionar autores</h1>
-                <div className='w-4/6 bg-white rounded-md flex items-center h-10'>
+                <div className='w-4/6 bg-white rounded-md flex items-center h-10' onKeyUp={(e) => { if (e.key == 'Enter') handleModelSearch("user") }}>
                   <input onChange={(e) => setModelSearch(e.target.value)} value={modelSearch} type={"text"} className="rounded-md basis-11/12 text-black border-none appearance-none focus:ring-0" />
                   <GoSearch onClick={() => { handleModelSearch("user") }} size={30} className="text-black text-center basis-1/12 cursor-pointer" />
                 </div>
@@ -304,7 +312,7 @@ const NewPage: NextPage<IAppProps> = (props) => {
               <div className='w-1/2 h-5/6 p-4 bg-box border-2 relative overflow-hidden'>
                 <BsXCircle size={24} className="float-right cursor-pointer" onClick={() => { setShowModel(false); setModelSearchRes(undefined); setModelSearch("") }} />
                 <h1 className='text-2xl font-fjalla mb-2'>Adicionar músicas</h1>
-                <div className='w-4/6 bg-white rounded-md flex items-center h-10'>
+                <div className='w-4/6 bg-white rounded-md flex items-center h-10' onKeyUp={(e) => { if (e.key == 'Enter') handleModelSearch("music")}}>
                   <input onChange={(e) => setModelSearch(e.target.value)} value={modelSearch} type={"text"} className="rounded-md basis-11/12 text-black border-none appearance-none focus:ring-0" />
                   <GoSearch onClick={() => { handleModelSearch("music") }} size={30} className="text-black text-center basis-1/12 cursor-pointer" />
                 </div>

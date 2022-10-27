@@ -1,7 +1,5 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { GoSearch } from "react-icons/go";
 import Card from "../components/Card";
@@ -27,10 +25,10 @@ const SearchPage: NextPage = () => {
 	const [albumRes, setAlbumRes] = useState<IAlbum[]>([]);
 	const [playlistRes, setPlaylistRes] = useState<IPlaylist[]>([]);
 
-	const [showUsers, setShowUsers] = useState<boolean>(false);
-	const [showMusics, setShowMusics] = useState<boolean>(false);
-	const [showAlbums, setShowAlbums] = useState<boolean>(false);
-	const [showPlaylists, setShowPlaylists] = useState<boolean>(false);
+	const [showUsers, setShowUsers] = useState<boolean>(true);
+	const [showMusics, setShowMusics] = useState<boolean>(true);
+	const [showAlbums, setShowAlbums] = useState<boolean>(true);
+	const [showPlaylists, setShowPlaylists] = useState<boolean>(true);
 
 	const handleSearch = () => {
 		setSearchedVal(searchVal);
@@ -41,7 +39,10 @@ const SearchPage: NextPage = () => {
 		fetch("/api/album/search?query=" + searchVal, { method: "GET" }).then((res) => res.json().then((data) => setAlbumRes(data)));
 		fetch("/api/playlist/search?query=" + searchVal, { method: "GET" }).then((res) => res.json().then((data) => setPlaylistRes(data)));
 
-		console.log(userRes, musicRes, albumRes, playlistRes);
+		setShowUsers(true);
+		setShowMusics(true);
+		setShowAlbums(true);
+		setShowPlaylists(true);
 		setShowRes(true);
 	}
 
@@ -52,9 +53,9 @@ const SearchPage: NextPage = () => {
 			</Head>
 
 			<div className="mt-24 flex justify-center">
-				<div className='w-4/6 bg-white rounded-md flex items-center h-12'>
-          <input value={searchVal} onChange={(e) => { setSearchVal(e.target.value) }} type={"text"} className="rounded-md w-full text-black border-none appearance-none focus:ring-0" />
-          <GoSearch onClick={handleSearch} size={36} className="text-black text-center cursor-pointer mr-2" />
+				<div className='w-4/6 bg-white rounded-md flex items-center h-12' onKeyUp={(e) => { if (e.key == 'Enter') handleSearch() }}>
+					<input placeholder="Busque por músicas, álbuns, playlists, tags ou usuários" value={searchVal} onChange={(e) => { setSearchVal(e.target.value) }} type={"text"} className="rounded-md w-full text-black border-none appearance-none focus:ring-0 font-light placeholder:italic" />
+					<GoSearch onClick={handleSearch} size={36} className="text-black text-center cursor-pointer mr-2" />
         </div>
 			</div>
 			<div className="flex justify-center">

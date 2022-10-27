@@ -14,6 +14,7 @@ module.exports = {
         fjalla: ['Fjalla One', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         merriweather: ['Merriweather', 'serif'],
+        overpass: ['Overpass', 'sans-serif']
       }
     },
   },

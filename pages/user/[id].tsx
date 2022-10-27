@@ -28,8 +28,6 @@ interface IAppProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, req }) => {
-  // Este valor determina se o usuário acessando a página é aquele a quem a página se refere, dando permissão para
-  // atualizar informações a partir dela
   let authorized: boolean = false;
   if (req.cookies.auth) {
     const decoded = verify(req.cookies.auth, process.env.JWT_SECRET!) as IAuthToken;

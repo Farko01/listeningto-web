@@ -182,7 +182,7 @@ const MusicPage: NextPage<IAppProps> = (props) => {
       </div>
 
       {/* Model */}
-      <div className={`fixed top-0 left-0 z-10 w-full h-full justify-center items-center bg-black/40 ${showModel ? "flex" : "hidden"}`}>
+      <div id="model-bg" className={`fixed top-0 left-0 z-10 w-full h-full justify-center items-center bg-black/40 ${showModel ? "flex" : "hidden"}`} onClick={(e) => { if ((e.target as HTMLElement).id == "model-bg") setShowModel(false) }}>
         <div className='w-1/2 h-5/6 p-4 bg-box border-2 relative overflow-hidden'>
           <BsXCircle size={24} className="float-right cursor-pointer" onClick={() => { setShowModel(false) }} />
           <h1 className='text-2xl font-fjalla mb-2'>Selecionar playlist</h1>

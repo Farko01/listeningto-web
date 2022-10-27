@@ -1,4 +1,3 @@
-import axios from "axios";
 import { verify } from "jsonwebtoken";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
