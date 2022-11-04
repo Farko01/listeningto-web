@@ -10,11 +10,6 @@ interface IAppProps {
   showMore: boolean;
 }
 
-interface IMusicItemProps {
-  music: IMusic;
-  i: number;
-}
-
 const MusicList = (props: IAppProps) => {
   const { setMusicList } = useUpdatePlayer()!;
 
@@ -44,38 +39,34 @@ const MusicList = (props: IAppProps) => {
     </>;
   }
 
-  const MusicItem = ({ music, i }: IMusicItemProps) => {
-    return (
-      <li key={i} className={`hover:bg-white/20 font-barlow p-0.5 flex ${ props.showMore && i > 10 ? "showMoreClass" : null }`}>
-        {/* Play */}
-        <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer mr-2" onClick={() => playMusicList(i)} />
-
-        {/* Nome e link da música */}
-        <div className='flex w-full [&>*]:px-2'>
-          <div className='basis-2/5'>
-            <Link href={"/music/" + music._id!}>
-              <a className="cursor-pointer hover:underline inline-block text-ellipsis">
-                { music.name }
-              </a>
-            </Link>
-          </div>
-
-          <div className='basis-2/5 text-ellipsis'>
-            { displayAuthors(music) }
-          </div>
-
-          <div className='basis-1/5'>
-            <span>{ formatTime(music.duration) }</span>
-          </div>
-        </div>
-      </li>
-    )
-  }
-
   return (
     <ul>
       { props.musics.map((music, i) => {
-        return <MusicItem key={i} music={music} i={i} />
+        return (
+          <li key={i} className={`hover:bg-white/20 font-barlow p-0.5 flex ${ props.showMore && i > 10 ? "showMoreClass" : null }`}>
+          {/* Play */}
+          <BsFillPlayFill size={24} className="hover:text-blue-900 cursor-pointer mr-2" onClick={() => playMusicList(i)} />
+  
+          {/* Nome e link da música */}
+          <div className='flex w-full [&>*]:px-2'>
+            <div className='basis-2/5'>
+              <Link href={"/music/" + music._id!}>
+                <a className="cursor-pointer hover:underline inline-block text-ellipsis">
+                  { music.name }
+                </a>
+              </Link>
+            </div>
+  
+            <div className='basis-2/5 text-ellipsis'>
+              { displayAuthors(music) }
+            </div>
+  
+            <div className='basis-1/5'>
+              <span>{ formatTime(music.duration) }</span>
+            </div>
+          </div>
+        </li>
+        )
       }) }
 
       { props.showMore && props.musics.length > 10 ? <span onClick={() => toggleShowMore()} className="ml-2 mt-2 cursor-pointer text-sm text-white/60">{ showMore ? "Mostrar menos" : "Mostrar mais" }</span> : null }
