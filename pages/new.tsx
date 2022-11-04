@@ -89,8 +89,6 @@ const NewPage: NextPage<IAppProps> = (props) => {
   const [selectedType, setSelectedType] = useState("music");
 
   const handleSubmit = () => {
-    console.log(selectedType);
-
     switch(selectedType) {
       case "music": {
         if (!name || !musicFile) return toast.error("O nome e o arquivo da música é necessário.");

@@ -120,7 +120,7 @@ const SearchPage: NextPage = () => {
 										</div>
 										<div className={`flex-wrap w-full [&>*]:m-2 py-1 border-2 border-white/20 ${showPlaylists ? "flex" : "hidden"}`}>
 										{
-											playlistRes.map((playlist, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/album/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />)
+											playlistRes.map((playlist, i) => <Card key={i} image={process.env.NEXT_PUBLIC_API_URL + playlist.cover} link={`/playlist/${playlist._id}`} text={playlist.name} subtext={"Playlist"} />)
 										}
 										</div>
 									</div>
